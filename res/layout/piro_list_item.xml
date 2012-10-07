@@ -14,5 +14,5 @@
             android:lines="4"
             android:linksClickable="true"
             android:maxLines="4"
-            android:minLines="4"/>
+            android:minLines="4" android:padding="3dp"/>
 </LinearLayout>
