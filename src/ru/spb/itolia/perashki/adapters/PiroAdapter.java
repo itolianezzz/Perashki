@@ -43,7 +43,7 @@ public class PiroAdapter extends ArrayAdapter<Piro> {
         }
         ViewHolder holder = (ViewHolder) rowView.getTag();
         holder.piro_text = (TextView) rowView.findViewById(R.id.piro_text);
-        Piro p = (Piro) piros.get(position);   //TODO change for RedmineSession
+        Piro p = piros.get(position);
         holder.piro_text.setText(p.getText());
         return rowView;
     }

@@ -1,12 +1,13 @@
 package ru.spb.itolia.perashki.ui;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.app.SherlockFragment;
 import ru.spb.itolia.perashki.PiroLoader;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.PiroAdapter;
@@ -21,7 +22,7 @@ import java.util.List;
  * Date: 06.10.12
  * Time: 15:24
  */
-public class PiroListFragment extends SherlockListFragment {
+public class PiroListFragment extends SherlockFragment {
 
     private ListView list;
 
@@ -31,13 +32,19 @@ public class PiroListFragment extends SherlockListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.piro_list_view, container, false);
-        //list = (ListView) view.findViewById(R.id.list);
+        list = (ListView) view.findViewById(R.id.piro_list);
         LoadPirosTask pirosTask = new LoadPirosTask();
         pirosTask.execute();
         return view;
     }
 
     private class LoadPirosTask extends AsyncTask<Void, Void, List<Piro>> {
+        protected ProgressDialog dialog;
+
+        protected void onPreExecute(){
+            dialog = ProgressDialog.show(getSherlockActivity(), "",
+                    "Loading. Please wait...", true);  //TODO Define string in strings.xml
+        }
 
         @Override
         protected List<Piro> doInBackground(Void... params) {
@@ -52,8 +59,9 @@ public class PiroListFragment extends SherlockListFragment {
 
         @Override
         protected void onPostExecute(List<Piro> piros){
-            PiroAdapter mAdapter = new PiroAdapter(getActivity(), piros);
-            setListAdapter(mAdapter);
+            PiroAdapter mAdapter = new PiroAdapter(getSherlockActivity(), piros);
+            list.setAdapter(mAdapter);
+            dialog.dismiss();
         }
     }
 

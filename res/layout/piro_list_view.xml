@@ -6,10 +6,10 @@
         >
 
     <ListView
-            android:id="@android:id/list"
+            android:id="@+id/piro_list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:visibility="gone"
+            android:visibility="visible"
             android:fastScrollEnabled="true"
             />
 
