@@ -9,8 +9,15 @@
             android:id="@+id/piro_list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             android:fastScrollEnabled="true"
             />
+    <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="visible"/>
 
 </RelativeLayout>

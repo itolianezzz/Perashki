@@ -1,12 +1,12 @@
 package ru.spb.itolia.perashki.ui;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import ru.spb.itolia.perashki.PiroLoader;
 import ru.spb.itolia.perashki.R;
@@ -23,7 +23,7 @@ import java.util.List;
  * Time: 15:24
  */
 public class PiroListFragment extends SherlockFragment {
-
+    private ProgressBar progress;
     private ListView list;
     private int piroType = 1;
 
@@ -35,17 +35,21 @@ public class PiroListFragment extends SherlockFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.piro_list_view, container, false);
         list = (ListView) view.findViewById(R.id.piro_list);
-        LoadPirosTask pirosTask = new LoadPirosTask();
-        pirosTask.execute();
+        progress = (ProgressBar) view.findViewById(R.id.progressBar);
         return view;
     }
 
+    public void populateView(){
+        LoadPirosTask pirosTask = new LoadPirosTask();
+        pirosTask.execute();
+    }
+
     private class LoadPirosTask extends AsyncTask<Void, Void, List<Piro>> {
-        protected ProgressDialog dialog;
+
 
         protected void onPreExecute(){
-            dialog = ProgressDialog.show(getSherlockActivity(), "",
-                    "Loading. Please wait...", true);  //TODO Define string in strings.xml
+            progress.setIndeterminate(true);
+            //dialog = ProgressDialog.show(getSherlockActivity(), "", "Loading. Please wait...", true);  //TODO Define string in strings.xml
         }
 
         @Override
@@ -66,9 +70,11 @@ public class PiroListFragment extends SherlockFragment {
 
         @Override
         protected void onPostExecute(List<Piro> piros){
+            progress.setVisibility(View.GONE);
+            list.setVisibility(View.VISIBLE);
             PiroAdapter mAdapter = new PiroAdapter(getSherlockActivity(), piros);
             list.setAdapter(mAdapter);
-            dialog.dismiss();
+
         }
     }
 
