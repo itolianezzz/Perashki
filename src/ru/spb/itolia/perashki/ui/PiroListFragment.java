@@ -25,8 +25,10 @@ import java.util.List;
 public class PiroListFragment extends SherlockFragment {
 
     private ListView list;
+    private int piroType = 1;
 
-    public PiroListFragment() {
+    public PiroListFragment(int piroType) {
+            this.piroType = piroType;
         }
 
     @Override
@@ -50,7 +52,12 @@ public class PiroListFragment extends SherlockFragment {
         protected List<Piro> doInBackground(Void... params) {
             List<Piro> piros = null;
             try {
-                piros = PiroLoader.getGood();
+                switch (piroType){
+                    case 1:
+                        piros = PiroLoader.getGood();
+                    case 2:
+                        piros = PiroLoader.getBest();
+                }
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
