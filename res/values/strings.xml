@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Perashki</string>
+    <string name="good_tab_title">Good</string>
+    <string name="best_tab_title">Best</string>
+    <string name="new_tab_title">New</string>
+    <string name="random_tab_title">Random</string>
+    <string name="all_tab_title">Archive</string>
 </resources>

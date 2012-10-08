@@ -7,6 +7,7 @@ import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import ru.spb.itolia.perashki.beans.Piro;
+import ru.spb.itolia.perashki.beans.piroType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,28 +21,40 @@ import java.util.List;
  */
 public class PiroLoader {
     private static final String HOST = "http://www.perashki.ru/";
-    private static final String GOOD = "piro/good/";
+    //private static final CharSequence GOOD = "piro/good/";
     private static final String BEST = "piro/best/";
+    private static final String NEW = "piro/new/";
     private static final String PIRO_CLASS_NAME = "pirojusttext";
 
-    public static final int PIRO_GOOD = 1;
-    public static final int PIRO_BEST = 2;
+
+    public static List<Piro> getNew() throws IOException {
+        List<Element> elements = getPiros(piroType.NEW);
+        return parsePiros(elements);
+    }
 
     public static List<Piro> getGood() throws IOException {
-        List<Element> elements = getPiros(GOOD);
-        List<Piro> piros = parsePiros(elements);
-        return piros;
+        List<Element> elements = getPiros(piroType.GOOD);
+        return parsePiros(elements);
     }
 
     public static List<Piro> getBest() throws IOException {
-        List<Element> elements = getPiros(BEST);
-        List<Piro> piros = parsePiros(elements);
-        return piros;
+        List<Element> elements = getPiros(piroType.BEST);
+        return parsePiros(elements);
     }
 
-    private static List<Element> getPiros(String piroType) throws IOException {
+    public static List<Piro> getRandom() throws IOException {
+        List<Element> elements = getPiros(piroType.RANDOM);
+        return parsePiros(elements);
+    }
+
+    public static List<Piro> getAll() throws IOException {
+        List<Element> elements = getPiros(piroType.ALL);
+        return parsePiros(elements);
+    }
+
+    private static List<Element> getPiros(piroType type) throws IOException {
         HttpClient client = new HttpClient();
-        PostMethod getPiros = new PostMethod(HOST + piroType);
+        PostMethod getPiros = new PostMethod(HOST + type.getPath());
         getPiros.addParameter("confirm", "1");
         client.getState().addCookie(new Cookie("www.perashki.ru", "userconfirmation", "true"));
         client.executeMethod(getPiros);

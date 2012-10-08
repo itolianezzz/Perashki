@@ -2,6 +2,7 @@ package ru.spb.itolia.perashki.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import ru.spb.itolia.perashki.PiroLoader;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.PiroAdapter;
 import ru.spb.itolia.perashki.beans.Piro;
+import ru.spb.itolia.perashki.beans.piroType;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,26 +25,31 @@ import java.util.List;
  * Time: 15:24
  */
 public class PiroListFragment extends SherlockFragment {
+    private static final String TAG = "Perashki.PiroListFragment";
     private ProgressBar progress;
     private ListView list;
-    private int piroType = 1;
+    private piroType type;
 
     public PiroListFragment(){
         }
 
-    public PiroListFragment(int piroType) {
-            this.piroType = piroType;
+    public PiroListFragment(piroType type) {
+        Log.v(TAG, "PiroListFragment instantiated! " + this.toString());
+        this.type = type;
         }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.v(TAG, "OnCreateView is called!");
         View view = inflater.inflate(R.layout.piro_list_view, container, false);
         list = (ListView) view.findViewById(R.id.piro_list);
         progress = (ProgressBar) view.findViewById(R.id.progressBar);
+        populateView();
         return view;
     }
 
     public void populateView(){
+        Log.v(TAG, "populateView called");
         LoadPirosTask pirosTask = new LoadPirosTask();
         pirosTask.execute();
     }
@@ -59,11 +66,22 @@ public class PiroListFragment extends SherlockFragment {
         protected List<Piro> doInBackground(Integer... params) {
             List<Piro> piros = null;
             try {
-                switch (piroType){
-                    case 1:
+                switch (type){
+                    case NEW:
+                        piros = PiroLoader.getNew();
+                        break;
+                    case GOOD:
                         piros = PiroLoader.getGood();
-                    case 2:
+                        break;
+                    case BEST:
                         piros = PiroLoader.getBest();
+                        break;
+                    case RANDOM:
+                        piros = PiroLoader.getRandom();
+                        break;
+                    case ALL:
+                        piros = PiroLoader.getAll();
+                        break;
                 }
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

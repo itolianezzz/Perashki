@@ -3,4 +3,7 @@
     <string name="app_name">Пирожковая</string>
     <string name="good_tab_title">Годные</string>
     <string name="best_tab_title">Лучшие</string>
+    <string name="new_tab_title">Новые</string>
+    <string name="random_tab_title">Рандом</string>
+    <string name="all_tab_title">Архив</string>
 </resources>
