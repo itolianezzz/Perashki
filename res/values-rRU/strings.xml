@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Пирожковая</string>
+    <string name="good_tab_title">Годные</string>
+    <string name="best_tab_title">Лучшие</string>
+</resources>

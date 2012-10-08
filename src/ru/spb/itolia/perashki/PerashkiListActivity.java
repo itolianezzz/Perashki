@@ -23,8 +23,8 @@ public class PerashkiListActivity extends SherlockFragmentActivity {
         indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         pager.setAdapter(adapter);
         indicator.setViewPager(pager);
-        adapter.addFragment(new PiroListFragment(PiroLoader.PIRO_GOOD), "good"); //TODO Change for normal text
-        adapter.addFragment(new PiroListFragment(PiroLoader.PIRO_BEST), "best");
+        adapter.addFragment(new PiroListFragment(PiroLoader.PIRO_GOOD), getResources().getString(R.string.good_tab_title));
+        adapter.addFragment(new PiroListFragment(PiroLoader.PIRO_BEST), getResources().getString(R.string.best_tab_title));
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -40,7 +40,6 @@ public class PerashkiListActivity extends SherlockFragmentActivity {
             public void onPageScrollStateChanged(int i) {
             }
         });
-        adapter.notifyDataSetChanged();
         //PiroListFragment currentFragment = (PiroListFragment) adapter.getItem(0);
         //currentFragment.populateView();
     }
