@@ -27,34 +27,42 @@ public class PiroLoader {
     private static final String PIRO_CLASS_NAME = "pirojusttext";
 
 
-    public static List<Piro> getNew() throws IOException {
-        List<Element> elements = getPiros(piroType.NEW);
+    public static List<Piro> getNew(int current_page) throws IOException {
+        List<Element> elements = getPiros(piroType.NEW, current_page);
         return parsePiros(elements);
     }
 
-    public static List<Piro> getGood() throws IOException {
-        List<Element> elements = getPiros(piroType.GOOD);
+    public static List<Piro> getGood(int current_page) throws IOException {
+        List<Element> elements = getPiros(piroType.GOOD, current_page);
         return parsePiros(elements);
     }
 
-    public static List<Piro> getBest() throws IOException {
-        List<Element> elements = getPiros(piroType.BEST);
+    public static List<Piro> getBest(int current_page) throws IOException {
+        List<Element> elements = getPiros(piroType.BEST, current_page);
         return parsePiros(elements);
     }
 
     public static List<Piro> getRandom() throws IOException {
-        List<Element> elements = getPiros(piroType.RANDOM);
+        List<Element> elements = getPiros(piroType.RANDOM, 0);
         return parsePiros(elements);
     }
 
-    public static List<Piro> getAll() throws IOException {
-        List<Element> elements = getPiros(piroType.ALL);
+    public static List<Piro> getAll(int current_page) throws IOException {
+        List<Element> elements = getPiros(piroType.ALL, current_page);
         return parsePiros(elements);
     }
 
-    private static List<Element> getPiros(piroType type) throws IOException {
+    private static List<Element> getPiros(piroType type, int page) throws IOException {
         HttpClient client = new HttpClient();
-        PostMethod getPiros = new PostMethod(HOST + type.getPath());
+        PostMethod getPiros;
+        switch (type) {
+            case RANDOM:
+                getPiros = new PostMethod(HOST + type.getPath());
+                break;
+            default:
+                getPiros = new PostMethod(HOST + type.getPath() + "?p=" + page);
+                break;
+        }
         getPiros.addParameter("confirm", "1");
         client.getState().addCookie(new Cookie("www.perashki.ru", "userconfirmation", "true"));
         client.executeMethod(getPiros);

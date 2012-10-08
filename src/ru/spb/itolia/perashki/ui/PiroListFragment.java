@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -29,6 +30,7 @@ public class PiroListFragment extends SherlockFragment {
     private ProgressBar progress;
     private ListView list;
     private piroType type;
+    private int current_page = 0;
 
     public PiroListFragment(){
         }
@@ -44,6 +46,17 @@ public class PiroListFragment extends SherlockFragment {
         View view = inflater.inflate(R.layout.piro_list_view, container, false);
         list = (ListView) view.findViewById(R.id.piro_list);
         progress = (ProgressBar) view.findViewById(R.id.progressBar);
+        Button btnLoadMore = new Button(getActivity());
+        btnLoadMore.setText("Load More");
+        list.addFooterView(btnLoadMore);
+        btnLoadMore.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                // Starting a new async task
+                populateView();
+            }
+        });
         populateView();
         return view;
     }
@@ -64,28 +77,32 @@ public class PiroListFragment extends SherlockFragment {
 
         @Override
         protected List<Piro> doInBackground(Integer... params) {
+            Log.v(TAG, "Current page now is: " + current_page);
+            current_page += 1;
+            Log.v(TAG, "And now it is: " + current_page);
             List<Piro> piros = null;
             try {
                 switch (type){
                     case NEW:
-                        piros = PiroLoader.getNew();
+                        piros = PiroLoader.getNew(current_page);
                         break;
                     case GOOD:
-                        piros = PiroLoader.getGood();
+                        piros = PiroLoader.getGood(current_page);
                         break;
                     case BEST:
-                        piros = PiroLoader.getBest();
+                        piros = PiroLoader.getBest(current_page);
                         break;
                     case RANDOM:
                         piros = PiroLoader.getRandom();
                         break;
                     case ALL:
-                        piros = PiroLoader.getAll();
+                        piros = PiroLoader.getAll(current_page);
                         break;
                 }
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+
             return piros;
         }
 
@@ -93,8 +110,10 @@ public class PiroListFragment extends SherlockFragment {
         protected void onPostExecute(List<Piro> piros){
             progress.setVisibility(View.GONE);
             list.setVisibility(View.VISIBLE);
+            int currentPosition = list.getFirstVisiblePosition();
             PiroAdapter mAdapter = new PiroAdapter(getSherlockActivity(), piros);
             list.setAdapter(mAdapter);
+            list.setSelectionFromTop(currentPosition + 1, 0);
 
         }
     }
