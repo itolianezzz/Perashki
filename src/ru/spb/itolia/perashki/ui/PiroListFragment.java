@@ -27,6 +27,9 @@ public class PiroListFragment extends SherlockFragment {
     private ListView list;
     private int piroType = 1;
 
+    public PiroListFragment(){
+        }
+
     public PiroListFragment(int piroType) {
             this.piroType = piroType;
         }
@@ -44,7 +47,7 @@ public class PiroListFragment extends SherlockFragment {
         pirosTask.execute();
     }
 
-    private class LoadPirosTask extends AsyncTask<Void, Void, List<Piro>> {
+    private class LoadPirosTask extends AsyncTask<Integer , Void, List<Piro>> {
 
 
         protected void onPreExecute(){
@@ -53,7 +56,7 @@ public class PiroListFragment extends SherlockFragment {
         }
 
         @Override
-        protected List<Piro> doInBackground(Void... params) {
+        protected List<Piro> doInBackground(Integer... params) {
             List<Piro> piros = null;
             try {
                 switch (piroType){
