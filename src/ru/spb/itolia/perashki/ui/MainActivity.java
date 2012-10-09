@@ -1,9 +1,12 @@
 package ru.spb.itolia.perashki.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.TabsAdapter;
@@ -32,8 +35,8 @@ public class MainActivity extends SherlockFragmentActivity {
         Log.v(TAG, "Added good piros fragment");
         adapter.addFragment(new PiroListFragment(piroType.BEST), getResources().getString(R.string.best_tab_title));
         Log.v(TAG, "Added second fragment");
-        adapter.addFragment(new PiroListFragment(piroType.RANDOM), getResources().getString(R.string.random_tab_title));
-        Log.v(TAG, "Added random fragment");
+        //adapter.addFragment(new PiroListFragment(piroType.RANDOM), getResources().getString(R.string.random_tab_title));
+        //Log.v(TAG, "Added random fragment");
         adapter.addFragment(new PiroListFragment(piroType.ALL), getResources().getString(R.string.all_tab_title));
         Log.v(TAG, "Added archive fragment");
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -54,6 +57,26 @@ public class MainActivity extends SherlockFragmentActivity {
         });
         //PiroListFragment currentFragment = (PiroListFragment) adapter.getItem(0);
         //currentFragment.populateView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(Menu.NONE, R.string.settings_label, Menu.NONE, getString(R.string.settings_label))
+                .setIcon(R.drawable.actionbar_settings)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int selectedItemId = item.getItemId();
+        switch (selectedItemId) {
+            case R.string.settings_label:
+                Intent mIntent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(mIntent, 0);
+                break;
+        }
+        return false;
     }
 
 }
