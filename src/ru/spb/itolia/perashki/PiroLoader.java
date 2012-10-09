@@ -20,7 +20,7 @@ import java.util.List;
  * Time: 11:11
  */
 public class PiroLoader {
-    private static final String HOST = "http://www.perashki.ru/";
+    public static final String HOST = "http://www.perashki.ru/";
     //private static final CharSequence GOOD = "piro/good/";
     private static final String BEST = "piro/best/";
     private static final String NEW = "piro/new/";

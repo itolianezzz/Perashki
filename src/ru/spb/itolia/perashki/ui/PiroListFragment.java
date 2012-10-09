@@ -1,11 +1,13 @@
 package ru.spb.itolia.perashki.ui;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ public class PiroListFragment extends SherlockFragment {
     private piroType type;
     private int current_page = 0;
     private List<Piro> piros;
+    private PiroAdapter mAdapter;
 
     public PiroListFragment(){
         }
@@ -42,6 +45,12 @@ public class PiroListFragment extends SherlockFragment {
         Log.v(TAG, "PiroListFragment instantiated! " + this.toString());
         this.type = type;
         }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,8 +72,24 @@ public class PiroListFragment extends SherlockFragment {
                 new LoadMorePirosTask().execute();
             }
         });
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Piro piroToShare = mAdapter.getItem(position);
+                sharePiro(piroToShare);
+            }
+        });
         populateView();
         return view;
+    }
+
+    private void sharePiro(Piro piroToShare) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        String shareBody = piroToShare.getText();
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, PiroLoader.HOST + piroToShare.getId()); //TODO Fix wrong URL
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_label)));
     }
 
     public void populateView(){
@@ -92,12 +117,14 @@ public class PiroListFragment extends SherlockFragment {
             progress.setVisibility(View.GONE);
             list.setVisibility(View.VISIBLE);
             int currentPosition = list.getFirstVisiblePosition();
-            PiroAdapter mAdapter = new PiroAdapter(getSherlockActivity(), piros);
+            mAdapter = new PiroAdapter(getSherlockActivity(), piros);
             list.setAdapter(mAdapter);
             list.setSelectionFromTop(currentPosition + 1, 0);
 
         }
     }
+
+
 
     private class LoadMorePirosTask extends AsyncTask<Integer , Void, List<Piro>> {
 
@@ -122,7 +149,7 @@ public class PiroListFragment extends SherlockFragment {
             loadMorePirosProgress.setVisibility(View.GONE);
             int currentPosition = list.getFirstVisiblePosition();
             piros.addAll(pirosToAdd);
-            PiroAdapter mAdapter = new PiroAdapter(getSherlockActivity(), piros);
+            mAdapter = new PiroAdapter(getSherlockActivity(), piros);
             list.setAdapter(mAdapter);
             list.setSelectionFromTop(currentPosition + 1, 0);
 
