@@ -1,4 +1,4 @@
-package ru.spb.itolia.perashki;
+package ru.spb.itolia.perashki.util;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.OutputDocument;

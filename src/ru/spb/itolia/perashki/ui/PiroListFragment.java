@@ -12,7 +12,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
-import ru.spb.itolia.perashki.PiroLoader;
+import ru.spb.itolia.perashki.util.IShowedFragment;
+import ru.spb.itolia.perashki.util.PiroLoader;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.PiroAdapter;
 import ru.spb.itolia.perashki.beans.Piro;
@@ -27,7 +28,7 @@ import java.util.List;
  * Date: 06.10.12
  * Time: 15:24
  */
-public class PiroListFragment extends SherlockFragment {
+public class PiroListFragment extends SherlockFragment implements IShowedFragment {
     private static final String TAG = "Perashki.PiroListFragment";
     private ProgressBar progress;
     private ProgressBar loadMorePirosProgress;
@@ -38,13 +39,13 @@ public class PiroListFragment extends SherlockFragment {
     private List<Piro> piros;
     private PiroAdapter mAdapter;
 
-    public PiroListFragment(){
-        }
+    public PiroListFragment() {
+    }
 
     public PiroListFragment(piroType type) {
         Log.v(TAG, "PiroListFragment instantiated! " + this.toString());
         this.type = type;
-        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class PiroListFragment extends SherlockFragment {
         loadMorePirosProgress = (ProgressBar) loadMoreView.findViewById(R.id.load_more_progress);
         loadMorePirosText = (TextView) loadMoreView.findViewById(R.id.load_more_text);
         //Button btnLoadMore = new Button(getActivity());
-       // btnLoadMore.setText("Load More");
+        // btnLoadMore.setText("Load More");
         list.addFooterView(loadMoreView);
         loadMoreView.setOnClickListener(new View.OnClickListener() {
 
@@ -77,9 +78,12 @@ public class PiroListFragment extends SherlockFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Piro piroToShare = mAdapter.getItem(position);
                 sharePiro(piroToShare);
+
             }
         });
-        populateView();
+        if (type.equals(piroType.GOOD) & current_page < 1) {
+            populateView();
+        }
         return view;
     }
 
@@ -92,16 +96,23 @@ public class PiroListFragment extends SherlockFragment {
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_label)));
     }
 
-    public void populateView(){
+    public void populateView() {
         Log.v(TAG, "populateView called");
         LoadPirosTask pirosTask = new LoadPirosTask();
         pirosTask.execute();
     }
 
-    private class LoadPirosTask extends AsyncTask<Integer , Void, List<Piro>> {
+    @Override
+    public void onShowedFragment() {
+        if (current_page < 1) {
+            populateView();
+        }
+    }
+
+    private class LoadPirosTask extends AsyncTask<Integer, Void, List<Piro>> {
 
 
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             progress.setIndeterminate(true);
             //dialog = ProgressDialog.show(getSherlockActivity(), "", "Loading. Please wait...", true);  //TODO Define string in strings.xml
         }
@@ -113,7 +124,7 @@ public class PiroListFragment extends SherlockFragment {
         }
 
         @Override
-        protected void onPostExecute(List<Piro> piros){
+        protected void onPostExecute(List<Piro> piros) {
             progress.setVisibility(View.GONE);
             list.setVisibility(View.VISIBLE);
             int currentPosition = list.getFirstVisiblePosition();
@@ -125,11 +136,10 @@ public class PiroListFragment extends SherlockFragment {
     }
 
 
+    private class LoadMorePirosTask extends AsyncTask<Integer, Void, List<Piro>> {
 
-    private class LoadMorePirosTask extends AsyncTask<Integer , Void, List<Piro>> {
 
-
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             loadMorePirosText.setVisibility(View.GONE);
             //loadMorePirosProgress.setMinimumHeight(loadMorePirosText.getHeight());
             loadMorePirosProgress.setVisibility(View.VISIBLE);
@@ -142,7 +152,7 @@ public class PiroListFragment extends SherlockFragment {
         }
 
         @Override
-        protected void onPostExecute(List<Piro> pirosToAdd){
+        protected void onPostExecute(List<Piro> pirosToAdd) {
             //progress.setVisibility(View.GONE);
             //list.setVisibility(View.VISIBLE);
             loadMorePirosText.setVisibility(View.VISIBLE);
@@ -163,14 +173,18 @@ public class PiroListFragment extends SherlockFragment {
         Log.v(TAG, "And now it is: " + current_page);
         List<Piro> piros = null;
         try {
-            switch (type){
+            Log.v(TAG, "type is: " + type);
+            switch (type) {
                 case NEW:
+                    Log.v(TAG, "Loading new piros");
                     piros = PiroLoader.getNew(current_page);
                     break;
                 case GOOD:
+                    Log.v(TAG, "Loading good piros");
                     piros = PiroLoader.getGood(current_page);
                     break;
                 case BEST:
+                    Log.v(TAG, "Loading best piros");
                     piros = PiroLoader.getBest(current_page);
                     break;
                 case RANDOM:

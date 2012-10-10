@@ -11,6 +11,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.TabsAdapter;
 import ru.spb.itolia.perashki.beans.piroType;
+import ru.spb.itolia.perashki.util.IShowedFragment;
 
 public class MainActivity extends SherlockFragmentActivity {
     private static final String TAG = "Perashki.MainActivity";
@@ -47,16 +48,17 @@ public class MainActivity extends SherlockFragmentActivity {
             @Override
             public void onPageSelected(int i) {
                 Log.v(TAG, "onPageSelected");
-                //PiroListFragment currentFragment = (PiroListFragment) adapter.getItem(i);
-                //currentFragment.populateView();
+                PiroListFragment fragment = (PiroListFragment) adapter.instantiateItem(pager, i);
+                if (fragment instanceof IShowedFragment) {
+                    fragment.onShowedFragment();
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int i) {
             }
         });
-        //PiroListFragment currentFragment = (PiroListFragment) adapter.getItem(0);
-        //currentFragment.populateView();
+
     }
 
     @Override
