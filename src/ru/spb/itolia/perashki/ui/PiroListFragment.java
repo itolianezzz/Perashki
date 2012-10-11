@@ -11,16 +11,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockFragment;
-import ru.spb.itolia.perashki.util.IShowedFragment;
-import ru.spb.itolia.perashki.util.PiroLoader;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.PiroAdapter;
+import ru.spb.itolia.perashki.beans.ParamTypes;
 import ru.spb.itolia.perashki.beans.Piro;
 import ru.spb.itolia.perashki.beans.piroType;
+import ru.spb.itolia.perashki.util.IShowedFragment;
+import ru.spb.itolia.perashki.util.PiroLoader;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +30,7 @@ import java.util.List;
  * Date: 06.10.12
  * Time: 15:24
  */
-public class PiroListFragment extends SherlockFragment implements IShowedFragment {
+public class PiroListFragment extends BaseFragment implements IShowedFragment {
     private static final String TAG = "Perashki.PiroListFragment";
     private ProgressBar progress;
     private ProgressBar loadMorePirosProgress;
@@ -168,30 +170,30 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
 
 
     private List<Piro> loadPiros() {
-        Log.v(TAG, "Current page now is: " + current_page);
         current_page += 1;
-        Log.v(TAG, "And now it is: " + current_page);
+        Map params = new HashMap<String, String>();
+        params.put(ParamTypes.PAGE, Integer.toString(current_page));
         List<Piro> piros = null;
         try {
             Log.v(TAG, "type is: " + type);
             switch (type) {
                 case NEW:
                     Log.v(TAG, "Loading new piros");
-                    piros = PiroLoader.getNew(current_page);
+                    piros = PiroLoader.getNew(params);
                     break;
                 case GOOD:
                     Log.v(TAG, "Loading good piros");
-                    piros = PiroLoader.getGood(current_page);
+                    piros = PiroLoader.getGood(params);
                     break;
                 case BEST:
                     Log.v(TAG, "Loading best piros");
-                    piros = PiroLoader.getBest(current_page);
+                    piros = PiroLoader.getBest(params);
                     break;
-                case RANDOM:
+/*                case RANDOM:
                     piros = PiroLoader.getRandom();
-                    break;
+                    break;*/
                 case ALL:
-                    piros = PiroLoader.getAll(current_page);
+                    piros = PiroLoader.getAll(params);
                     break;
             }
         } catch (IOException e) {

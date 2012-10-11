@@ -6,12 +6,16 @@ import net.htmlparser.jericho.Source;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.protocol.HTTP;
 import ru.spb.itolia.perashki.beans.Piro;
 import ru.spb.itolia.perashki.beans.piroType;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,48 +31,64 @@ public class PiroLoader {
     private static final String PIRO_CLASS_NAME = "pirojusttext";
 
 
-    public static List<Piro> getNew(int current_page) throws IOException {
-        List<Element> elements = getPiros(piroType.NEW, current_page);
+    public static List<Piro> getNew(Map<String, String> params) throws IOException {
+        List<Element> elements = getPiros(piroType.NEW, params);
         return parsePiros(elements);
     }
 
-    public static List<Piro> getGood(int current_page) throws IOException {
-        List<Element> elements = getPiros(piroType.GOOD, current_page);
+    public static List<Piro> getGood(Map<String, String> params) throws IOException {
+        List<Element> elements = getPiros(piroType.GOOD, params);
         return parsePiros(elements);
     }
 
-    public static List<Piro> getBest(int current_page) throws IOException {
-        List<Element> elements = getPiros(piroType.BEST, current_page);
+    public static List<Piro> getBest(Map<String, String> params) throws IOException {
+        List<Element> elements = getPiros(piroType.BEST, params);
         return parsePiros(elements);
     }
 
-    public static List<Piro> getRandom() throws IOException {
+/*    public static List<Piro> getRandom() throws IOException {
         List<Element> elements = getPiros(piroType.RANDOM, 0);
         return parsePiros(elements);
-    }
+    }*/
 
-    public static List<Piro> getAll(int current_page) throws IOException {
-        List<Element> elements = getPiros(piroType.ALL, current_page);
+    public static List<Piro> getAll(Map<String, String> params) throws IOException {
+        List<Element> elements = getPiros(piroType.ALL, params);
         return parsePiros(elements);
     }
 
-    private static List<Element> getPiros(piroType type, int page) throws IOException {
+
+
+    private static List<Element> getPiros(piroType type, Map<String, String> params) throws IOException {
         HttpClient client = new HttpClient();
         PostMethod getPiros;
-        switch (type) {
-            case RANDOM:
-                getPiros = new PostMethod(HOST + type.getPath());
-                break;
-            default:
-                getPiros = new PostMethod(HOST + type.getPath() + "?p=" + page);
-                break;
-        }
+        String url = buildUrl(type, params);
+        getPiros = new PostMethod(url);
         getPiros.addParameter("confirm", "1");
         client.getState().addCookie(new Cookie("www.perashki.ru", "userconfirmation", "true"));
         client.executeMethod(getPiros);
         Source response = new Source(getPiros.getResponseBodyAsStream());
 
         return response.getAllElementsByClass(PIRO_CLASS_NAME);
+    }
+
+    private static String buildUrl(piroType type, Map<String, String> params) {
+        String url = HOST + type.getPath();
+        if(!params.isEmpty()) {
+            String paramsString = "?";
+            for (Map.Entry<String, String> entry: params.entrySet()) {
+                if(entry.getValue().isEmpty()) continue;
+                String key= entry.getKey();
+                String value = entry.getValue();
+                paramsString = new StringBuilder(paramsString).append(key).append("=").append(value).toString();
+                try {
+                    paramsString = URLEncoder.encode(paramsString, HTTP.UTF_8);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+            url = new StringBuilder(url).append(paramsString).toString();
+        }
+        return url;
     }
 
     private static List<Piro> parsePiros(List<Element> elements) {

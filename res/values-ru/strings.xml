@@ -9,4 +9,6 @@
     <string name="load_more_label">\nХочу еще</string>
     <string name="settings_label">Настройки</string>
     <string name="share_label">Поделиться</string>
+    <string name="search_button_label">Найти</string>
+    <string name="search_tab_title">Поиск</string>
 </resources>

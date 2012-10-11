@@ -9,4 +9,6 @@
     <string name="load_more_label">\nLoad more</string>
     <string name="settings_label">Settings</string>
     <string name="share_label">Share via</string>
+    <string name="search_button_label">search</string>
+    <string name="search_tab_title">Search</string>
 </resources>

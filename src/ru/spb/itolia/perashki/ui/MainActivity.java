@@ -40,6 +40,7 @@ public class MainActivity extends SherlockFragmentActivity {
         //Log.v(TAG, "Added random fragment");
         adapter.addFragment(new PiroListFragment(piroType.ALL), getResources().getString(R.string.all_tab_title));
         Log.v(TAG, "Added archive fragment");
+        adapter.addFragment(new SearchFragment(), getResources().getString(R.string.search_tab_title));
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -48,7 +49,7 @@ public class MainActivity extends SherlockFragmentActivity {
             @Override
             public void onPageSelected(int i) {
                 Log.v(TAG, "onPageSelected");
-                PiroListFragment fragment = (PiroListFragment) adapter.instantiateItem(pager, i);
+                BaseFragment fragment = (BaseFragment) adapter.instantiateItem(pager, i);
                 if (fragment instanceof IShowedFragment) {
                     fragment.onShowedFragment();
                 }
