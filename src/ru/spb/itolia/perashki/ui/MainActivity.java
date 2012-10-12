@@ -64,9 +64,13 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(Menu.NONE, R.string.refresh_label, Menu.NONE, getString(R.string.refresh_label))
+                .setIcon(R.drawable.actionbar_refresh)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menu.add(Menu.NONE, R.string.settings_label, Menu.NONE, getString(R.string.settings_label))
                 .setIcon(R.drawable.actionbar_settings)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
         return true;
     }
 
@@ -78,6 +82,16 @@ public class MainActivity extends SherlockFragmentActivity {
                 Intent mIntent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(mIntent, 0);
                 break;
+            case R.string.refresh_label:
+                if(adapter.getItem(pager.getCurrentItem()).getClass().equals(PiroListFragment.class)){
+                    PiroListFragment current_fragment = (PiroListFragment) adapter.getItem(pager.getCurrentItem());
+                    current_fragment.populateView();
+                } else {
+                    SearchFragment current_fragment = (SearchFragment) adapter.getItem(pager.getCurrentItem());
+                    current_fragment.performSearch();
+                }
+
+
         }
         return false;
     }

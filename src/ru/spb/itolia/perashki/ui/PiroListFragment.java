@@ -37,9 +37,10 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
     private TextView loadMorePirosText;
     private ListView list;
     private piroType type;
-    private int current_page = 0;
+    private int current_page = 1;
     private List<Piro> piros;
     private PiroAdapter mAdapter;
+    LoadPirosTask pirosTask;
 
     public PiroListFragment() {
     }
@@ -47,12 +48,6 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
     public PiroListFragment(piroType type) {
         Log.v(TAG, "PiroListFragment instantiated! " + this.toString());
         this.type = type;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
@@ -83,7 +78,7 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
 
             }
         });
-        if (type.equals(piroType.GOOD) & current_page < 1) {
+        if (type.equals(piroType.GOOD) & current_page < 2) {
             populateView();
         }
         return view;
@@ -98,16 +93,20 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_label)));
     }
 
-    public void populateView() {
-        Log.v(TAG, "populateView called");
-        LoadPirosTask pirosTask = new LoadPirosTask();
-        pirosTask.execute();
-    }
-
     @Override
     public void onShowedFragment() {
-        if (current_page < 1) {
+        if (current_page < 2 & list.getAdapter() == null) {
             populateView();
+        }
+    }
+
+    protected void populateView() {
+        Log.v(TAG, "populateView called");
+        if(pirosTask == null){
+            pirosTask = new LoadPirosTask();
+        }
+        if(pirosTask.getStatus() != AsyncTask.Status.RUNNING){
+            pirosTask.execute();
         }
     }
 
@@ -115,8 +114,8 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
 
 
         protected void onPreExecute() {
-            progress.setIndeterminate(true);
-            //dialog = ProgressDialog.show(getSherlockActivity(), "", "Loading. Please wait...", true);  //TODO Define string in strings.xml
+            progress.setVisibility(View.VISIBLE);
+            list.setVisibility(View.GONE);
         }
 
         @Override
@@ -150,6 +149,7 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
 
         @Override
         protected List<Piro> doInBackground(Integer... params) {
+            current_page += 1;
             return loadPiros();
         }
 
@@ -170,7 +170,6 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
 
 
     private List<Piro> loadPiros() {
-        current_page += 1;
         Map params = new HashMap<String, String>();
         params.put(ParamTypes.PAGE, Integer.toString(current_page));
         List<Piro> piros = null;

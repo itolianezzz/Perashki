@@ -50,21 +50,25 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performSearch();
+                if(!searchStringEdit.getText().toString().trim().isEmpty()) {
+                    performSearch();
+                }
             }
         });
         return view;
     }
 
-    private void performSearch() {
+    protected void performSearch() {
         new SearchPirosTask().execute();
     }
 
     @Override
     public void onShowedFragment() {
-        searchStringEdit.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        if(!resultsList.isShown()) {
+            searchStringEdit.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        }
     }
 
     private class SearchPirosTask extends AsyncTask<Void, Void, List<Piro>> {   //TODO perform search AsyncTask
@@ -74,6 +78,7 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
             String searchString = searchStringEdit.getText().toString();
             searchProgress.setVisibility(View.VISIBLE);
             searchButton.setEnabled(false);
+            searchStringEdit.setEnabled(false);
             resultsList.setVisibility(View.GONE);
             params = new HashMap<String, String>();
             params.put(ParamTypes.TEXT, searchString);
@@ -94,6 +99,7 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
         protected void onPostExecute(List<Piro> pirosToAdd){
             searchProgress.setVisibility(View.GONE);
             resultsList.setVisibility(View.VISIBLE);
+            searchStringEdit.setEnabled(true);
             searchButton.setEnabled(true);
             PiroAdapter adapter = new PiroAdapter(getActivity(), list);
             resultsList.setAdapter(adapter);
