@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -61,7 +62,9 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
 
     @Override
     public void onShowedFragment() {
-        //TODO toggle show keyboard here
+        searchStringEdit.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
     }
 
     private class SearchPirosTask extends AsyncTask<Void, Void, List<Piro>> {   //TODO perform search AsyncTask

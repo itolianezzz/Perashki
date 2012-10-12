@@ -8,4 +8,4 @@ public class ParamTypes {
     public static final String MONTH = "m";
     public static final String QUANTITY = "sp";
     public static final String TEXT = "text";
-};
+}

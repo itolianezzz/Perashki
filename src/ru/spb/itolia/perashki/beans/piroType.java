@@ -15,4 +15,4 @@ public enum piroType {
     public String getPath() {
         return path;
     }
-};
+}
