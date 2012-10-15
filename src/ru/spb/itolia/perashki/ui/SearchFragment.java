@@ -82,13 +82,14 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
             resultsList.setVisibility(View.GONE);
             params = new HashMap<String, String>();
             params.put(ParamTypes.TEXT, searchString);
+            params.put(ParamTypes.PIROTYPE, ParamTypes.ALL);
         }
 
         @Override
         protected List<Piro> doInBackground(Void... parameters) {
 
             try {
-                list = PiroLoader.getAll(params);
+                list = PiroLoader.getPiros(params);
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }

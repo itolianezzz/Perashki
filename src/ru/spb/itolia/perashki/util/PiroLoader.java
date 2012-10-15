@@ -3,12 +3,11 @@ package ru.spb.itolia.perashki.util;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
-import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.http.protocol.HTTP;
+import ru.spb.itolia.perashki.beans.ParamTypes;
 import ru.spb.itolia.perashki.beans.Piro;
-import ru.spb.itolia.perashki.beans.piroType;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -31,48 +30,49 @@ public class PiroLoader {
     private static final String PIRO_CLASS_NAME = "pirojusttext";
 
 
-    public static List<Piro> getNew(Map<String, String> params) throws IOException {
+  /*  public static List<Piro> getNew(Map<String, String> params) throws IOException {
         List<Element> elements = getPiros(piroType.NEW, params);
         return parsePiros(elements);
     }
-
-    public static List<Piro> getGood(Map<String, String> params) throws IOException {
+*/
+ /*   public static List<Piro> getGood(Map<String, String> params) throws IOException {
         List<Element> elements = getPiros(piroType.GOOD, params);
         return parsePiros(elements);
-    }
+    }*/
 
-    public static List<Piro> getBest(Map<String, String> params) throws IOException {
+/*    public static List<Piro> getBest(Map<String, String> params) throws IOException {
         List<Element> elements = getPiros(piroType.BEST, params);
         return parsePiros(elements);
-    }
+    }*/
 
 /*    public static List<Piro> getRandom() throws IOException {
         List<Element> elements = getPiros(piroType.RANDOM, 0);
         return parsePiros(elements);
     }*/
 
-    public static List<Piro> getAll(Map<String, String> params) throws IOException {
+/*    public static List<Piro> getAll(Map<String, String> params) throws IOException {
         List<Element> elements = getPiros(piroType.ALL, params);
+        return parsePiros(elements);
+    }*/
+
+
+
+    public static List<Piro> getPiros(Map<String, String> params) throws IOException {
+        HttpClient client = new HttpClient();
+        PostMethod getPiros;
+        String url = buildUrl(params);
+        getPiros = new PostMethod(url);
+        getPiros.addParameter("confirm", "1");
+        //client.getState().addCookie(new Cookie("www.perashki.ru", "userconfirmation", "true"));
+        client.executeMethod(getPiros);
+        Source response = new Source(getPiros.getResponseBodyAsStream());
+        List<Element> elements = response.getAllElementsByClass(PIRO_CLASS_NAME);
         return parsePiros(elements);
     }
 
-
-
-    private static List<Element> getPiros(piroType type, Map<String, String> params) throws IOException {
-        HttpClient client = new HttpClient();
-        PostMethod getPiros;
-        String url = buildUrl(type, params);
-        getPiros = new PostMethod(url);
-        getPiros.addParameter("confirm", "1");
-        client.getState().addCookie(new Cookie("www.perashki.ru", "userconfirmation", "true"));
-        client.executeMethod(getPiros);
-        Source response = new Source(getPiros.getResponseBodyAsStream());
-
-        return response.getAllElementsByClass(PIRO_CLASS_NAME);
-    }
-
-    private static String buildUrl(piroType type, Map<String, String> params) {
-        String url = HOST + type.getPath();
+    private static String buildUrl(Map<String, String> params) {
+        String url = HOST + params.get(ParamTypes.PIROTYPE);
+        params.remove(ParamTypes.PIROTYPE);
         if(!params.isEmpty()) {
             String paramsString = "?";
             for (Map.Entry<String, String> entry: params.entrySet()) {

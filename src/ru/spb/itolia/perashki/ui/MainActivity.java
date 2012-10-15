@@ -10,7 +10,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.TabsAdapter;
-import ru.spb.itolia.perashki.beans.piroType;
+import ru.spb.itolia.perashki.beans.ParamTypes;
 import ru.spb.itolia.perashki.util.IShowedFragment;
 
 public class MainActivity extends SherlockFragmentActivity {
@@ -32,13 +32,13 @@ public class MainActivity extends SherlockFragmentActivity {
         indicator.setViewPager(pager);
 /*        adapter.addFragment(new PiroListFragment(piroType.NEW), getResources().getString(R.string.new_tab_title));
         Log.v(TAG, "Added new piros fragment");*/  //New piros only available if logged in
-        adapter.addFragment(new PiroListFragment(piroType.GOOD), getResources().getString(R.string.good_tab_title));
+        adapter.addFragment(new PiroListFragment(ParamTypes.GOOD), getResources().getString(R.string.good_tab_title));
         Log.v(TAG, "Added good piros fragment");
-        adapter.addFragment(new PiroListFragment(piroType.BEST), getResources().getString(R.string.best_tab_title));
+        adapter.addFragment(new PiroListFragment(ParamTypes.BEST), getResources().getString(R.string.best_tab_title));
         Log.v(TAG, "Added second fragment");
         //adapter.addFragment(new PiroListFragment(piroType.RANDOM), getResources().getString(R.string.random_tab_title));
         //Log.v(TAG, "Added random fragment");
-        adapter.addFragment(new PiroListFragment(piroType.ALL), getResources().getString(R.string.all_tab_title));
+        adapter.addFragment(new PiroListFragment(ParamTypes.ALL), getResources().getString(R.string.all_tab_title));
         Log.v(TAG, "Added archive fragment");
         adapter.addFragment(new SearchFragment(), getResources().getString(R.string.search_tab_title));
         indicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
