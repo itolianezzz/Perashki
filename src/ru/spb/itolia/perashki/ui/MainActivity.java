@@ -1,5 +1,7 @@
 package ru.spb.itolia.perashki.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -12,6 +14,9 @@ import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.TabsAdapter;
 import ru.spb.itolia.perashki.beans.ParamTypes;
 import ru.spb.itolia.perashki.util.IShowedFragment;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends SherlockFragmentActivity {
     private static final String TAG = "Perashki.MainActivity";
@@ -67,6 +72,9 @@ public class MainActivity extends SherlockFragmentActivity {
         menu.add(Menu.NONE, R.string.refresh_label, Menu.NONE, getString(R.string.refresh_label))
                 .setIcon(R.drawable.actionbar_refresh)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(Menu.NONE, R.string.sort_label, Menu.NONE, getString(R.string.sort_label))
+                .setIcon(R.drawable.actionbar_sort)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menu.add(Menu.NONE, R.string.settings_label, Menu.NONE, getString(R.string.settings_label))
                 .setIcon(R.drawable.actionbar_settings)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -90,11 +98,27 @@ public class MainActivity extends SherlockFragmentActivity {
                     SearchFragment current_fragment = (SearchFragment) adapter.getItem(pager.getCurrentItem());
                     current_fragment.performSearch();
                 }
-
-
+                break;
+            case R.string.sort_label:
+                makeSortDialog();
+                break;
         }
         return false;
     }
 
+    private void makeSortDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.sort_dialog_label);
+        builder.setItems(R.array.sort, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put(ParamTypes.SORT, String.valueOf(which));
+                BaseFragment current_fragment = (BaseFragment) adapter.getItem(pager.getCurrentItem());
+                current_fragment.setParams(params);
+
+            }
+        });
+        builder.create().show();
+    }
 
 }

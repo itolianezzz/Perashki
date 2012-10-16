@@ -2,6 +2,7 @@ package ru.spb.itolia.perashki.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import java.util.Map;
  * Time: 19:22
  */
 public class SearchFragment extends BaseFragment implements IShowedFragment {
+    private static final String TAG = "Perashki.SearchFragment";
     private EditText searchStringEdit;
     private Button searchButton;
     private ListView resultsList;
@@ -69,6 +71,19 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
         }
+    }
+
+    @Override
+    public void setParams(Map<String, String> params) {
+        this.params.putAll(params);
+    }
+
+    @Override
+    public void onPause() {
+        Log.v(TAG, "onPause()");
+        super.onPause();
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(searchStringEdit.getWindowToken(), 0);
     }
 
     private class SearchPirosTask extends AsyncTask<Void, Void, List<Piro>> {   //TODO perform search AsyncTask

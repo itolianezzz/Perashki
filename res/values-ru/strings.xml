@@ -11,5 +11,14 @@
     <string name="share_label">Поделиться</string>
     <string name="search_button_label">Найти</string>
     <string name="search_tab_title">Поиск</string>
-    <string name="refresh_label">refresh</string>
+    <string name="refresh_label">Обновить</string>
+    <string name="sort_label">Сортировка</string>
+    <string name="sort_dialog_label">Сортировать по</string>
+    <array name="sort">
+        <item>дате написания</item>
+        <item>дате переопубликации</item>
+        <item>выставленной оценке</item>
+        <item>автору</item>
+        <item>сумме</item>
+    </array>
 </resources>

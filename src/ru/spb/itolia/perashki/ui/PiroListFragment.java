@@ -39,7 +39,8 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
     private int current_page = 1;
     private List<Piro> piros;
     private PiroAdapter mAdapter;
-    LoadPirosTask pirosTask;
+    private LoadPirosTask pirosTask;
+    protected Map params = new HashMap<String, String>();
 
     public PiroListFragment() {
         Log.v(TAG, "PirolistFragment empty constructor: " + this.toString());
@@ -150,10 +151,10 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         protected void onPostExecute(List<Piro> piros) {
             progress.setVisibility(View.GONE);
             list.setVisibility(View.VISIBLE);
-            int currentPosition = list.getFirstVisiblePosition();
+            //int currentPosition = list.getFirstVisiblePosition();
             mAdapter = new PiroAdapter(getSherlockActivity(), piros);
             list.setAdapter(mAdapter);
-            list.setSelectionFromTop(currentPosition + 1, 0);
+            //list.setSelectionFromTop(currentPosition + 1, 0);
 
         }
     }
@@ -190,9 +191,12 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         }
     }
 
+    @Override
+    public void setParams(Map<String, String> params) {
+        this.params.putAll(params);
+    }
 
     private List<Piro> loadPiros() {
-        Map params = new HashMap<String, String>();
         params.put(ParamTypes.PAGE, Integer.toString(current_page));
         params.put(ParamTypes.PIROTYPE, ParamTypes.GOOD);
         List<Piro> piros = null;
