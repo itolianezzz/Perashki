@@ -73,18 +73,23 @@ public class PiroLoader {
     private static String buildUrl(Map<String, String> params) {
         String url = HOST + params.get(ParamTypes.PIROTYPE);
         params.remove(ParamTypes.PIROTYPE);
-        if(!params.isEmpty()) {
+        if (!params.isEmpty()) {
             String paramsString = "?";
-            for (Map.Entry<String, String> entry: params.entrySet()) {
-                if(entry.getValue().isEmpty()) continue;
-                String key= entry.getKey();
-                String value = entry.getValue();
-                paramsString = new StringBuilder(paramsString).append(key).append("=").append(value).toString();
-                try {
-                    paramsString = URLEncoder.encode(paramsString, HTTP.UTF_8);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                if (entry.getValue().isEmpty()) continue;
+                if(!paramsString.equals("?")) {
+                    paramsString += "&";
                 }
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if (key.equalsIgnoreCase(ParamTypes.TEXT)) {
+                    try {
+                        value = URLEncoder.encode(value, HTTP.UTF_8);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
+                paramsString = new StringBuilder(paramsString).append(key).append("=").append(value).toString();
             }
             url = new StringBuilder(url).append(paramsString).toString();
         }

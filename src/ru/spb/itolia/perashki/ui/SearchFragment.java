@@ -36,7 +36,7 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
     private Button searchButton;
     private ListView resultsList;
     private ProgressBar searchProgress;
-    private Map params;
+    private Map params = new HashMap<String, String>();
     List<Piro> list;
 
     public SearchFragment() {
@@ -53,14 +53,15 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
             @Override
             public void onClick(View v) {
                 if(!searchStringEdit.getText().toString().trim().isEmpty()) {
-                    performSearch();
+                    populateView();
                 }
             }
         });
         return view;
     }
 
-    protected void performSearch() {
+    @Override
+    public void populateView() {
         new SearchPirosTask().execute();
     }
 

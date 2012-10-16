@@ -96,7 +96,7 @@ public class MainActivity extends SherlockFragmentActivity {
                     current_fragment.populateView();
                 } else {
                     SearchFragment current_fragment = (SearchFragment) adapter.getItem(pager.getCurrentItem());
-                    current_fragment.performSearch();
+                    current_fragment.populateView();
                 }
                 break;
             case R.string.sort_label:
@@ -115,7 +115,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 params.put(ParamTypes.SORT, String.valueOf(which));
                 BaseFragment current_fragment = (BaseFragment) adapter.getItem(pager.getCurrentItem());
                 current_fragment.setParams(params);
-
+                current_fragment.populateView();
             }
         });
         builder.create().show();

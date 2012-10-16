@@ -20,4 +20,8 @@ public class BaseFragment extends SherlockFragment implements IShowedFragment {
     public void setParams(Map<String, String> params) {
 
     }
+
+    public void populateView(){
+
+    }
 }

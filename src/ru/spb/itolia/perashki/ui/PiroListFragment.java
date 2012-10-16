@@ -126,7 +126,8 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         }
     }
 
-    protected void populateView() {
+    @Override
+    public void populateView() {
         Log.v(TAG, "populateView called");
         pirosTask = new LoadPirosTask();
         pirosTask.execute();
