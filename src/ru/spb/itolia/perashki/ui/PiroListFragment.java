@@ -19,6 +19,7 @@ import ru.spb.itolia.perashki.util.IShowedFragment;
 import ru.spb.itolia.perashki.util.PiroLoader;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
     private ProgressBar progress;
     private ProgressBar loadMorePirosProgress;
     private TextView loadMorePirosText;
+    private TextView noPiros;
     private ListView list;
     private String type;
     private int current_page = 1;
@@ -82,6 +84,7 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         View view = inflater.inflate(R.layout.piro_list_view, container, false);
         list = (ListView) view.findViewById(R.id.piro_list);
         progress = (ProgressBar) view.findViewById(R.id.progressBar);
+        noPiros = (TextView) view.findViewById(R.id.no_piros_text_view);
         View loadMoreView = View.inflate(getActivity(), R.layout.load_more_view, null);
         loadMorePirosProgress = (ProgressBar) loadMoreView.findViewById(R.id.load_more_progress);
         loadMorePirosText = (TextView) loadMoreView.findViewById(R.id.load_more_text);
@@ -129,6 +132,7 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
     @Override
     public void populateView() {
         Log.v(TAG, "populateView called");
+
         pirosTask = new LoadPirosTask();
         pirosTask.execute();
 
@@ -138,23 +142,38 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
 
 
         protected void onPreExecute() {
+            noPiros.setVisibility(View.GONE);
             progress.setVisibility(View.VISIBLE);
             list.setVisibility(View.GONE);
         }
 
         @Override
-        protected List<Piro> doInBackground(Integer... params) {
-            piros = loadPiros();
-            return piros;
+        protected List<Piro> doInBackground(Integer... parameters) {
+            if(isConnectedToInternet()) {
+                params.put(ParamTypes.PAGE, Integer.toString(current_page));
+                params.put(ParamTypes.PIROTYPE, type);
+                piros = loadPiros(params);
+                return piros;
+            } else {
+                piros = new ArrayList<Piro>();
+                return piros;
+            }
         }
 
         @Override
         protected void onPostExecute(List<Piro> piros) {
             progress.setVisibility(View.GONE);
-            list.setVisibility(View.VISIBLE);
-            //int currentPosition = list.getFirstVisiblePosition();
-            mAdapter = new PiroAdapter(getSherlockActivity(), piros);
-            list.setAdapter(mAdapter);
+            if(!piros.isEmpty()) {
+                progress.setVisibility(View.GONE);
+                list.setVisibility(View.VISIBLE);
+                mAdapter = new PiroAdapter(getSherlockActivity(), piros);
+                list.setAdapter(mAdapter);
+            } else {
+                showConnectionProblemsPopup();
+
+                noPiros.setVisibility(View.VISIBLE);
+            }
+
             //list.setSelectionFromTop(currentPosition + 1, 0);
 
         }
@@ -199,30 +218,10 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
 
     private List<Piro> loadPiros() {
         params.put(ParamTypes.PAGE, Integer.toString(current_page));
-        params.put(ParamTypes.PIROTYPE, ParamTypes.GOOD);
+        params.put(ParamTypes.PIROTYPE, type);
         List<Piro> piros = null;
         try {
             Log.v(TAG, "type is: " + type);
-        /*    switch (type) {
-                case ParamTypes.NEW:
-                    Log.v(TAG, "Loading new piros");
-                    piros = PiroLoader.getNew(params);
-                    break;
-                case GOOD:
-                    Log.v(TAG, "Loading good piros");
-                    piros = PiroLoader.getGood(params);
-                    break;
-                case BEST:
-                    Log.v(TAG, "Loading best piros");
-                    piros = PiroLoader.getBest(params);
-                    break;
-*//*                case RANDOM:
-                    piros = PiroLoader.getRandom();
-                    break;*//*
-                case ALL:
-                    piros = PiroLoader.getAll(params);
-                    break;
-            }*/
             piros = PiroLoader.getPiros(params);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key=""
+        android:title="@string/year_label"
+        android:summary="@string/year_summary" />
+    <EditTextPreference
+            android:name="Author filter"
+            android:summary="@string/author_summary"
+            android:title="@string/author_label"
+            android:key="AuthorFilter" />
+
+</PreferenceScreen>

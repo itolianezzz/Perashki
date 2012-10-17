@@ -96,21 +96,24 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
             searchButton.setEnabled(false);
             searchStringEdit.setEnabled(false);
             resultsList.setVisibility(View.GONE);
-            params = new HashMap<String, String>();
             params.put(ParamTypes.TEXT, searchString);
             params.put(ParamTypes.PIROTYPE, ParamTypes.ALL);
         }
 
         @Override
         protected List<Piro> doInBackground(Void... parameters) {
+            if (isConnectedToInternet()) {
 
-            try {
-                list = PiroLoader.getPiros(params);
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                try {
+                    list = PiroLoader.getPiros(params);
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                return null;
             }
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
+            return null;
+         }
+
 
         @Override
         protected void onPostExecute(List<Piro> pirosToAdd){
@@ -123,4 +126,6 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
 
         }
     }
+
+
 }

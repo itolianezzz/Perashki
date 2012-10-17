@@ -69,15 +69,18 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, R.string.refresh_label, Menu.NONE, getString(R.string.refresh_label))
-                .setIcon(R.drawable.actionbar_refresh)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(Menu.NONE, R.string.sort_label, Menu.NONE, getString(R.string.sort_label))
-                .setIcon(R.drawable.actionbar_sort)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menu.add(Menu.NONE, R.string.settings_label, Menu.NONE, getString(R.string.settings_label))
                 .setIcon(R.drawable.actionbar_settings)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(Menu.NONE, R.string.refresh_label, Menu.NONE, getString(R.string.refresh_label))
+                .setIcon(R.drawable.actionbar_refresh)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.NONE, R.string.sort_label, Menu.NONE, getString(R.string.sort_label))
+                .setIcon(R.drawable.actionbar_sort)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        menu.add(Menu.NONE,R.string.filter_label, Menu.NONE, getString(R.string.filter_label))
+                .setIcon(R.drawable.actionbar_filter)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         return true;
     }
@@ -102,6 +105,9 @@ public class MainActivity extends SherlockFragmentActivity {
             case R.string.sort_label:
                 makeSortDialog();
                 break;
+            case R.string.filter_label:
+                makeFilterDialog();
+                break;
         }
         return false;
     }
@@ -119,6 +125,11 @@ public class MainActivity extends SherlockFragmentActivity {
             }
         });
         builder.create().show();
+    }
+
+    private void makeFilterDialog() {
+        Intent settingsActivity = new Intent(getBaseContext(), FilterActivity.class);
+        startActivityForResult(settingsActivity, 0);
     }
 
 }
