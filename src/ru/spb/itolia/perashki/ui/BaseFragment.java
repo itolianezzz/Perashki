@@ -40,21 +40,19 @@ public class BaseFragment extends SherlockFragment implements IShowedFragment {
     }
 
     public Boolean isConnectedToInternet() {
-        ConnectivityManager conMgr = (ConnectivityManager)getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
-        NetworkInfo i = conMgr.getActiveNetworkInfo();
-        if (i == null)
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else
             return false;
-        if (!i.isConnected())
-            return false;
-        if (!i.isAvailable())
-            return false;
-        return true;
     }
 
     public List<Piro> loadPiros(Map<String, String> params) {
         List<Piro> piros = null;
         try {
             Log.v(TAG, "type is: " + type);
+            Log.v(TAG, "Params in loadPiros: " + params.size());
             piros = PiroLoader.getPiros(params);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

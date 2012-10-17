@@ -18,7 +18,6 @@ import ru.spb.itolia.perashki.beans.Piro;
 import ru.spb.itolia.perashki.util.IShowedFragment;
 import ru.spb.itolia.perashki.util.PiroLoader;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,7 @@ import java.util.Map;
  */
 public class PiroListFragment extends BaseFragment implements IShowedFragment {
     private static final String TAG = "Perashki.PiroListFragment";
+    protected Map params;
     private ProgressBar progress;
     private ProgressBar loadMorePirosProgress;
     private TextView loadMorePirosText;
@@ -42,7 +42,6 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
     private List<Piro> piros;
     private PiroAdapter mAdapter;
     private LoadPirosTask pirosTask;
-    protected Map params = new HashMap<String, String>();
 
     public PiroListFragment() {
         Log.v(TAG, "PirolistFragment empty constructor: " + this.toString());
@@ -66,8 +65,6 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         Log.v(TAG, "OnSaveInstansceState!");
     }
 
-
-
     @Override
     public void onPause() {
         super.onPause();
@@ -81,6 +78,7 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
             Log.v(TAG, "Bundle here!");
             type = savedInstanceState.getString(ParamTypes.PIROTYPE);
         }
+        params  = new HashMap<String, String>();
         View view = inflater.inflate(R.layout.piro_list_view, container, false);
         list = (ListView) view.findViewById(R.id.piro_list);
         progress = (ProgressBar) view.findViewById(R.id.progressBar);
@@ -92,14 +90,13 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         // btnLoadMore.setText("Load More");
         list.addFooterView(loadMoreView);
         loadMoreView.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
-                // Starting a new async task
-                new LoadMorePirosTask().execute();
+               new LoadMorePirosTask().execute(params);
             }
         });
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        list.setOnItemClickListener(new
+AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Piro piroToShare = mAdapter.getItem(position);
@@ -132,26 +129,34 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
     @Override
     public void populateView() {
         Log.v(TAG, "populateView called");
-
+        params.put(ParamTypes.PIROTYPE, type);
         pirosTask = new LoadPirosTask();
-        pirosTask.execute();
+        pirosTask.execute(params);
 
     }
 
-    private class LoadPirosTask extends AsyncTask<Integer, Void, List<Piro>> {
+    @Override
+    public void setParams(Map<String, String> params) {
+        this.params.putAll(params);
+    }
+
+    private class LoadPirosTask extends AsyncTask<Map<String, String>, Void, List<Piro>> {
 
 
         protected void onPreExecute() {
             noPiros.setVisibility(View.GONE);
             progress.setVisibility(View.VISIBLE);
             list.setVisibility(View.GONE);
+
+
         }
 
         @Override
-        protected List<Piro> doInBackground(Integer... parameters) {
+        protected List<Piro> doInBackground(Map<String, String>... parameters) {
+            Map<String, String> params = parameters[0];
+
             if(isConnectedToInternet()) {
                 params.put(ParamTypes.PAGE, Integer.toString(current_page));
-                params.put(ParamTypes.PIROTYPE, type);
                 piros = loadPiros(params);
                 return piros;
             } else {
@@ -170,7 +175,6 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
                 list.setAdapter(mAdapter);
             } else {
                 showConnectionProblemsPopup();
-
                 noPiros.setVisibility(View.VISIBLE);
             }
 
@@ -179,55 +183,47 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         }
     }
 
-
-    private class LoadMorePirosTask extends AsyncTask<Integer, Void, List<Piro>> {
+    private class LoadMorePirosTask extends AsyncTask<Map<String, String>, Void, List<Piro>> {
 
 
         protected void onPreExecute() {
             loadMorePirosText.setVisibility(View.GONE);
-            //loadMorePirosProgress.setMinimumHeight(loadMorePirosText.getHeight());
             loadMorePirosProgress.setVisibility(View.VISIBLE);
-            //dialog = ProgressDialog.show(getSherlockActivity(), "", "Loading. Please wait...", true);  //TODO Define string in strings.xml
         }
 
         @Override
-        protected List<Piro> doInBackground(Integer... params) {
-            current_page += 1;
-            return loadPiros();
+        protected List<Piro> doInBackground(Map<String, String>... parameters) {
+            Map<String, String> params = parameters[0];
+            params.put(ParamTypes.PIROTYPE, type);
+            List<Piro> pirosToAdd = new ArrayList<Piro>();
+            if(!isConnectedToInternet()) {
+                current_page -= 1;
+                return pirosToAdd;
+            } else {
+                Log.v(TAG, "Params before loadmorepiros: " + params.size());
+                params.put(ParamTypes.PAGE, Integer.toString(current_page += 1));
+                pirosToAdd  = loadPiros(params);
+                return pirosToAdd;
+            }
+
         }
 
         @Override
         protected void onPostExecute(List<Piro> pirosToAdd) {
-            //progress.setVisibility(View.GONE);
-            //list.setVisibility(View.VISIBLE);
-            loadMorePirosText.setVisibility(View.VISIBLE);
-            loadMorePirosProgress.setVisibility(View.GONE);
             int currentPosition = list.getFirstVisiblePosition();
-            piros.addAll(pirosToAdd);
-            mAdapter = new PiroAdapter(getSherlockActivity(), piros);
-            list.setAdapter(mAdapter);
+            if(!pirosToAdd.isEmpty()) {
+                loadMorePirosText.setText(R.string.load_more_label);
+                loadMorePirosText.setVisibility(View.VISIBLE);
+                piros.addAll(pirosToAdd);
+                mAdapter = new PiroAdapter(getSherlockActivity(), piros);
+                list.setAdapter(mAdapter);
+            } else {
+                showConnectionProblemsPopup();
+                loadMorePirosText.setText(R.string.load_piros_fail);
+                loadMorePirosText.setVisibility(View.VISIBLE);
+            }
+            loadMorePirosProgress.setVisibility(View.GONE);
             list.setSelectionFromTop(currentPosition + 1, 0);
-
         }
     }
-
-    @Override
-    public void setParams(Map<String, String> params) {
-        this.params.putAll(params);
-    }
-
-    private List<Piro> loadPiros() {
-        params.put(ParamTypes.PAGE, Integer.toString(current_page));
-        params.put(ParamTypes.PIROTYPE, type);
-        List<Piro> piros = null;
-        try {
-            Log.v(TAG, "type is: " + type);
-            piros = PiroLoader.getPiros(params);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        return piros;
-    }
-
 }

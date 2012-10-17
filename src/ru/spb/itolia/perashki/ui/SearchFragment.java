@@ -7,10 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.*;
 import ru.spb.itolia.perashki.R;
 import ru.spb.itolia.perashki.adapters.PiroAdapter;
 import ru.spb.itolia.perashki.beans.ParamTypes;
@@ -37,7 +34,8 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
     private ListView resultsList;
     private ProgressBar searchProgress;
     private Map params = new HashMap<String, String>();
-    List<Piro> list;
+    private List<Piro> piros;
+    private TextView noPiros;
 
     public SearchFragment() {
     }
@@ -48,6 +46,7 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
         searchStringEdit = (EditText) view.findViewById(R.id.search_string_edit);
         searchButton = (Button) view.findViewById(R.id.search_button);
         resultsList = (ListView) view.findViewById(R.id.search_results_list);
+        noPiros = (TextView) view.findViewById(R.id.no_piros_text_view);
         searchProgress = (ProgressBar) view.findViewById(R.id.search_progress);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +91,7 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
         @Override
         protected void onPreExecute(){
             String searchString = searchStringEdit.getText().toString();
+            noPiros.setVisibility(View.GONE);
             searchProgress.setVisibility(View.VISIBLE);
             searchButton.setEnabled(false);
             searchStringEdit.setEnabled(false);
@@ -103,9 +103,8 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
         @Override
         protected List<Piro> doInBackground(Void... parameters) {
             if (isConnectedToInternet()) {
-
-                try {
-                    list = PiroLoader.getPiros(params);
+               try {
+                    piros = PiroLoader.getPiros(params);
                 } catch (IOException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
@@ -116,16 +115,18 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
 
 
         @Override
-        protected void onPostExecute(List<Piro> pirosToAdd){
+        protected void onPostExecute(List<Piro> piros){
             searchProgress.setVisibility(View.GONE);
-            resultsList.setVisibility(View.VISIBLE);
+            if(!piros.isEmpty()) {
+                resultsList.setVisibility(View.VISIBLE);
+                PiroAdapter adapter = new PiroAdapter(getActivity(), SearchFragment.this.piros);
+                resultsList.setAdapter(adapter);
+            } else {
+                showConnectionProblemsPopup();
+                noPiros.setVisibility(View.VISIBLE);
+            }
             searchStringEdit.setEnabled(true);
             searchButton.setEnabled(true);
-            PiroAdapter adapter = new PiroAdapter(getActivity(), list);
-            resultsList.setAdapter(adapter);
-
         }
     }
-
-
 }

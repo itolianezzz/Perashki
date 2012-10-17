@@ -23,6 +23,7 @@
     <string name="connection_problems_message">Connection problems!</string>
     <string name="no_piros_text">No piros :-(</string>
     <string name="connection_problems_toast">Connection problems. Please try again</string>
+    <string name="load_piros_fail">Failed! Try again?</string>
     <array name="sort">
         <item>Write date</item>
         <item>Repost date</item>
