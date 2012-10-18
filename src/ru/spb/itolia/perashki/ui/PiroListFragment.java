@@ -86,8 +86,6 @@ public class PiroListFragment extends BaseFragment implements IShowedFragment {
         View loadMoreView = View.inflate(getActivity(), R.layout.load_more_view, null);
         loadMorePirosProgress = (ProgressBar) loadMoreView.findViewById(R.id.load_more_progress);
         loadMorePirosText = (TextView) loadMoreView.findViewById(R.id.load_more_text);
-        //Button btnLoadMore = new Button(getActivity());
-        // btnLoadMore.setText("Load More");
         list.addFooterView(loadMoreView);
         loadMoreView.setOnClickListener(new View.OnClickListener() {
             @Override
