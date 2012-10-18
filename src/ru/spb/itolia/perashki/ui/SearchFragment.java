@@ -16,6 +16,7 @@ import ru.spb.itolia.perashki.util.IShowedFragment;
 import ru.spb.itolia.perashki.util.PiroLoader;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,10 +109,11 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
                 } catch (IOException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-                return null;
+                return piros;
             }
-            return null;
-         }
+            piros = new ArrayList<Piro>();
+            return piros;
+        }
 
 
         @Override
