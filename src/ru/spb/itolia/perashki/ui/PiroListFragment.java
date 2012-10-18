@@ -140,7 +140,7 @@ AdapterView.OnItemClickListener() {
         this.params.putAll(params);
     }
 
-    private class LoadPirosTask extends AsyncTask<Map<String, String>, Void, List<Piro>> {
+    private class LoadPirosTask extends LoadPirosBaseTask {
 
 
         protected void onPreExecute() {
@@ -151,10 +151,9 @@ AdapterView.OnItemClickListener() {
 
         }
 
-        @Override
+/*        @Override
         protected List<Piro> doInBackground(Map<String, String>... parameters) {
             Map<String, String> params = parameters[0];
-
             if(isConnectedToInternet()) {
                 params.put(ParamTypes.PAGE, Integer.toString(current_page));
                 piros = loadPiros(params);
@@ -163,7 +162,7 @@ AdapterView.OnItemClickListener() {
                 piros = new ArrayList<Piro>();
                 return piros;
             }
-        }
+        }*/
 
         @Override
         protected void onPostExecute(List<Piro> piros) {
