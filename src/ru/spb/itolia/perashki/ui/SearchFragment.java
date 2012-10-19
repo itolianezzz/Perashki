@@ -30,11 +30,12 @@ public class SearchFragment extends PiroListFragment implements IShowedFragment 
     private Button searchButton;
     private ListView resultsList;
     private ProgressBar searchProgress;
-    private Map params = new HashMap<String, String>();
-    private List<Piro> piros;
+    //private Map params = new HashMap<String, String>();
+    //private List<Piro> piros;
     private TextView noPiros;
 
     public SearchFragment() {
+        params = new HashMap<String, String>();
     }
 
     @Override
@@ -53,6 +54,7 @@ public class SearchFragment extends PiroListFragment implements IShowedFragment 
                 }
             }
         });
+
         return view;
     }
 

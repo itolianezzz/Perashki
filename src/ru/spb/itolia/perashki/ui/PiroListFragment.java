@@ -38,8 +38,10 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
     private TextView loadMorePirosText;
     private TextView noPiros;
     private ListView list;
+    private View loadMoreView;
     private String type;
     private int current_page = 1;
+    private int last_page;
     private List<Piro> piros;
     private PiroAdapter mAdapter;
     private LoadPirosTask pirosTask;
@@ -84,10 +86,9 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
         list = (ListView) view.findViewById(R.id.piro_list);
         progress = (ProgressBar) view.findViewById(R.id.progressBar);
         noPiros = (TextView) view.findViewById(R.id.no_piros_text_view);
-        View loadMoreView = View.inflate(getActivity(), R.layout.load_more_view, null);
+        loadMoreView = View.inflate(getActivity(), R.layout.load_more_view, null);
         loadMorePirosProgress = (ProgressBar) loadMoreView.findViewById(R.id.load_more_progress);
         loadMorePirosText = (TextView) loadMoreView.findViewById(R.id.load_more_text);
-        list.addFooterView(loadMoreView);
         loadMoreView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -152,6 +153,9 @@ AdapterView.OnItemClickListener() {
             if(isConnectedToInternet()) {
                 params.put(ParamTypes.PAGE, Integer.toString(current_page));
                 piros = loadPiros(params);
+                if(last_page < 1) {
+                    last_page = PiroLoader.getPages();
+                }
                 return piros;
             } else {
                 piros = new ArrayList<Piro>();
@@ -166,6 +170,9 @@ AdapterView.OnItemClickListener() {
             if(!piros.isEmpty()) {
                 progress.setVisibility(View.GONE);
                 list.setVisibility(View.VISIBLE);
+                if(current_page < last_page){
+                    list.addFooterView(loadMoreView);
+                }
                 mAdapter = new PiroAdapter(getSherlockActivity(), piros);
                 list.setAdapter(mAdapter);
             } else {

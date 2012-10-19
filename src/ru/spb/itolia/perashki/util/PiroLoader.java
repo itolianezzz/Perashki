@@ -24,51 +24,9 @@ import java.util.Map;
  */
 public class PiroLoader {
     public static final String HOST = "http://www.perashki.ru/";
-    //private static final CharSequence GOOD = "piro/good/";
-    private static final String BEST = "piro/best/";
-    private static final String NEW = "piro/new/";
     private static final String PIRO_CLASS_NAME = "pirojusttext";
-
-
-  /*  public static List<Piro> getNew(Map<String, String> params) throws IOException {
-        List<Element> elements = getPiros(piroType.NEW, params);
-        return parsePiros(elements);
-    }
-*/
- /*   public static List<Piro> getGood(Map<String, String> params) throws IOException {
-        List<Element> elements = getPiros(piroType.GOOD, params);
-        return parsePiros(elements);
-    }*/
-
-/*    public static List<Piro> getBest(Map<String, String> params) throws IOException {
-        List<Element> elements = getPiros(piroType.BEST, params);
-        return parsePiros(elements);
-    }*/
-
-/*    public static List<Piro> getRandom() throws IOException {
-        List<Element> elements = getPiros(piroType.RANDOM, 0);
-        return parsePiros(elements);
-    }*/
-
-/*    public static List<Piro> getAll(Map<String, String> params) throws IOException {
-        List<Element> elements = getPiros(piroType.ALL, params);
-        return parsePiros(elements);
-    }*/
-
-
-
-    public static List<Piro> getPiros(Map<String, String> params) throws IOException {
-        HttpClient client = new HttpClient();
-        PostMethod getPiros;
-        String url = buildUrl(params);
-        getPiros = new PostMethod(url);
-        getPiros.addParameter("confirm", "1");
-        //client.getState().addCookie(new Cookie("www.perashki.ru", "userconfirmation", "true"));
-        client.executeMethod(getPiros);
-        Source response = new Source(getPiros.getResponseBodyAsStream());
-        List<Element> elements = response.getAllElementsByClass(PIRO_CLASS_NAME);
-        return parsePiros(elements);
-    }
+    private static final String PIRO_INFO_CLASS = "simple_frame sml_cnd";
+    private static Source response;
 
     private static String buildUrl(Map<String, String> params) {
         String url = HOST + params.get(ParamTypes.PIROTYPE);
@@ -96,6 +54,18 @@ public class PiroLoader {
         return url;
     }
 
+    public static List<Piro> getPiros(Map<String, String> params) throws IOException {
+        HttpClient client = new HttpClient();
+        PostMethod getPiros;
+        String url = buildUrl(params);
+        getPiros = new PostMethod(url);
+        getPiros.addParameter("confirm", "1");
+        client.executeMethod(getPiros);
+        response = new Source(getPiros.getResponseBodyAsStream());
+        List<Element> elements = response.getAllElementsByClass(PIRO_CLASS_NAME);
+        return parsePiros(elements);
+    }
+
     private static List<Piro> parsePiros(List<Element> elements) {
         List<Piro> piros = new ArrayList<Piro>();
         String regexpToRemoveOddTags = "(<(/?(a|h).+?)>)";
@@ -108,5 +78,12 @@ public class PiroLoader {
             piros.add(piro);
         }
         return piros;
+    }
+
+    public static int getPages() {
+        Element element = response.getAllElementsByClass("pages").get(0);
+        List<Element> elements = element.getAllElements("a");
+        int pages = Integer.parseInt(elements.get(elements.size()-1).getContent().toString());
+    return pages;
     }
 }
