@@ -54,7 +54,7 @@ public class MainActivity extends SherlockFragmentActivity {
             @Override
             public void onPageSelected(int i) {
                 Log.v(TAG, "onPageSelected");
-                BaseFragment fragment = (BaseFragment) adapter.instantiateItem(pager, i);
+                PiroListFragment fragment = (PiroListFragment) adapter.instantiateItem(pager, i);
                 if (fragment instanceof IShowedFragment) {
                     fragment.onShowedFragment();
                 }
@@ -119,7 +119,7 @@ public class MainActivity extends SherlockFragmentActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put(ParamTypes.SORT, String.valueOf(which));
-                BaseFragment current_fragment = (BaseFragment) adapter.getItem(pager.getCurrentItem());
+                PiroListFragment current_fragment = (PiroListFragment) adapter.getItem(pager.getCurrentItem());
                 current_fragment.setParams(params);
                 current_fragment.populateView();
             }

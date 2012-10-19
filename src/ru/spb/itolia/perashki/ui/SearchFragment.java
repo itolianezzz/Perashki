@@ -1,6 +1,5 @@
 package ru.spb.itolia.perashki.ui;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,10 +12,7 @@ import ru.spb.itolia.perashki.adapters.PiroAdapter;
 import ru.spb.itolia.perashki.beans.ParamTypes;
 import ru.spb.itolia.perashki.beans.Piro;
 import ru.spb.itolia.perashki.util.IShowedFragment;
-import ru.spb.itolia.perashki.util.PiroLoader;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +24,7 @@ import java.util.Map;
  * Date: 10.10.12
  * Time: 19:22
  */
-public class SearchFragment extends BaseFragment implements IShowedFragment {
+public class SearchFragment extends PiroListFragment implements IShowedFragment {
     private static final String TAG = "Perashki.SearchFragment";
     private EditText searchStringEdit;
     private Button searchButton;
@@ -62,7 +58,7 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
 
     @Override
     public void populateView() {
-        new SearchPirosTask().execute();
+        new SearchPirosTask().execute(params);
     }
 
     @Override
@@ -87,7 +83,7 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
         imm.hideSoftInputFromWindow(searchStringEdit.getWindowToken(), 0);
     }
 
-    private class SearchPirosTask extends AsyncTask<Void, Void, List<Piro>> {   //TODO perform search AsyncTask
+    private class SearchPirosTask extends LoadPirosTask {
 
         @Override
         protected void onPreExecute(){
@@ -102,26 +98,11 @@ public class SearchFragment extends BaseFragment implements IShowedFragment {
         }
 
         @Override
-        protected List<Piro> doInBackground(Void... parameters) {
-            if (isConnectedToInternet()) {
-               try {
-                    piros = PiroLoader.getPiros(params);
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                return piros;
-            }
-            piros = new ArrayList<Piro>();
-            return piros;
-        }
-
-
-        @Override
         protected void onPostExecute(List<Piro> piros){
             searchProgress.setVisibility(View.GONE);
             if(!piros.isEmpty()) {
                 resultsList.setVisibility(View.VISIBLE);
-                PiroAdapter adapter = new PiroAdapter(getActivity(), SearchFragment.this.piros);
+                PiroAdapter adapter = new PiroAdapter(getActivity(), piros);
                 resultsList.setAdapter(adapter);
             } else {
                 showConnectionProblemsPopup();
