@@ -83,6 +83,9 @@ public class PiroLoader {
     public static int getPages() {
         Element element = response.getAllElementsByClass("pages").get(0);
         List<Element> elements = element.getAllElements("a");
+        if(elements == null){
+            return 1;
+        }
         int pages = Integer.parseInt(elements.get(elements.size()-1).getContent().toString());
     return pages;
     }

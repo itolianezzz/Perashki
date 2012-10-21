@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Пирожковая</string>
     <string name="good_tab_title">Годные</string>
-    <string name="best_tab_title">Лучшие</string>
+    <string name="best_tab_title">Клёвые</string>
     <string name="new_tab_title">Новые</string>
     <string name="random_tab_title">Рандом</string>
     <string name="all_tab_title">Архив</string>
@@ -16,14 +16,14 @@
     <string name="sort_dialog_label">Сортировать по</string>
     <string name="filter_label">Отбор</string>
     <string name="filter_dialog_label">Отобрать</string>
-    <string name="year_label">Year</string>
-    <string name="year_summary">Select year</string>
-    <string name="author_label">Author</string>
-    <string name="author_summary">Select author</string>
-    <string name="connection_problems_message">Connection problems!</string>
-    <string name="no_piros_text">No piros :-(</string>
-    <string name="connection_problems_toast">Connection problems. Please try again</string>
-    <string name="load_piros_fail">\n\nFailed! Try again?\n</string>
+    <string name="year_label">Год</string>
+    <string name="year_summary">Выберите год</string>
+    <string name="author_label">Автор</string>
+    <string name="author_summary">Введите имя автора</string>
+    <string name="connection_problems_message">Проблемы со связью</string>
+    <string name="no_piros_text">Пирожков нет :-(</string>
+    <string name="connection_problems_toast">Что-то не так. Попробуйте еще раз</string>
+    <string name="load_piros_fail">\n\nНе удалось! Попробовать еще?\n</string>
     <array name="sort">
         <item>дате написания</item>
         <item>дате переопубликации</item>

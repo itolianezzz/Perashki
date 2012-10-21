@@ -34,16 +34,16 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
     private static final String TAG = "Perashki.PiroListFragment";
     protected Map params;
     private ProgressBar progress;
-    private ProgressBar loadMorePirosProgress;
-    private TextView loadMorePirosText;
-    private TextView noPiros;
-    private ListView list;
-    private View loadMoreView;
+    protected ProgressBar loadMorePirosProgress;
+    protected TextView loadMorePirosText;
+    protected TextView noPiros;
+    protected ListView list;
+    protected View loadMoreView;
     private String type;
-    private int current_page = 1;
-    private int last_page;
-    private List<Piro> piros;
-    private PiroAdapter mAdapter;
+    protected int current_page = 1;
+    protected int last_page;
+    protected List<Piro> piros;
+    protected PiroAdapter mAdapter;
     private LoadPirosTask pirosTask;
 
     public PiroListFragment() {
@@ -82,6 +82,7 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
             type = savedInstanceState.getString(ParamTypes.PIROTYPE);
         }
         params  = new HashMap<String, String>();
+        piros = new ArrayList<Piro>();
         View view = inflater.inflate(R.layout.piro_list_view, container, false);
         list = (ListView) view.findViewById(R.id.piro_list);
         progress = (ProgressBar) view.findViewById(R.id.progressBar);
@@ -92,7 +93,9 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
         loadMoreView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-               new LoadMorePirosTask().execute(params);
+                current_page += 1;
+                params.put(ParamTypes.PIROTYPE, type);
+                new LoadMorePirosTask().execute(params);
             }
         });
         list.setOnItemClickListener(new
@@ -110,7 +113,7 @@ AdapterView.OnItemClickListener() {
         return view;
     }
 
-    private void sharePiro(Piro piroToShare) {
+    protected void sharePiro(Piro piroToShare) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String shareBody = piroToShare.getText();
@@ -129,6 +132,8 @@ AdapterView.OnItemClickListener() {
     public void populateView() {
         Log.v(TAG, "populateView called");
         params.put(ParamTypes.PIROTYPE, type);
+        current_page = 1;
+        piros.clear();
         pirosTask = new LoadPirosTask();
         pirosTask.execute(params);
 
@@ -150,29 +155,25 @@ AdapterView.OnItemClickListener() {
         @Override
         protected List<Piro> doInBackground(Map<String, String>... parameters) {
             Map<String, String> params = parameters[0];
+            List<Piro> loadedPiros = new ArrayList<Piro>();
             if(isConnectedToInternet()) {
                 params.put(ParamTypes.PAGE, Integer.toString(current_page));
-                piros = loadPiros(params);
+                loadedPiros = loadPiros(params);
                 if(last_page < 1) {
                     last_page = PiroLoader.getPages();
                 }
-                return piros;
-            } else {
-                piros = new ArrayList<Piro>();
-                return piros;
             }
+            return loadedPiros;
         }
 
         @Override
-        protected void onPostExecute(List<Piro> piros) {
-            Log.v(TAG, "onPostExecute() called: " + PiroListFragment.this.type);
+        protected void onPostExecute(List<Piro> pirosToAdd) {
             progress.setVisibility(View.GONE);
-            if(!piros.isEmpty()) {
+            if(!pirosToAdd.isEmpty()) {
                 progress.setVisibility(View.GONE);
                 list.setVisibility(View.VISIBLE);
-                if(current_page < last_page){
-                    list.addFooterView(loadMoreView);
-                }
+                fixFooter();
+                piros.addAll(pirosToAdd);
                 mAdapter = new PiroAdapter(getSherlockActivity(), piros);
                 list.setAdapter(mAdapter);
             } else {
@@ -182,7 +183,7 @@ AdapterView.OnItemClickListener() {
        }
     }
 
-    protected class LoadMorePirosTask extends AsyncTask<Map<String, String>, Void, List<Piro>> {
+    protected class LoadMorePirosTask extends LoadPirosTask {
 
         protected void onPreExecute() {
             loadMorePirosText.setVisibility(View.GONE);
@@ -190,33 +191,18 @@ AdapterView.OnItemClickListener() {
         }
 
         @Override
-        protected List<Piro> doInBackground(Map<String, String>... parameters) {
-            Map<String, String> params = parameters[0];
-            params.put(ParamTypes.PIROTYPE, type);
-            List<Piro> pirosToAdd = new ArrayList<Piro>();
-            if(!isConnectedToInternet()) {
-                current_page -= 1;
-                return pirosToAdd;
-            } else {
-                Log.v(TAG, "Params before loadmorepiros: " + params.size());
-                params.put(ParamTypes.PAGE, Integer.toString(current_page += 1));
-                pirosToAdd  = loadPiros(params);
-                return pirosToAdd;
-            }
-        }
-
-        @Override
         protected void onPostExecute(List<Piro> pirosToAdd) {
-            super.onPostExecute(pirosToAdd);
             int currentPosition = list.getFirstVisiblePosition();
             if(!pirosToAdd.isEmpty()) {
                 loadMorePirosText.setText(R.string.load_more_label);
                 loadMorePirosText.setVisibility(View.VISIBLE);
                 piros.addAll(pirosToAdd);
+                fixFooter();
                 mAdapter = new PiroAdapter(getSherlockActivity(), piros);
                 list.setAdapter(mAdapter);
             } else {
                 showConnectionProblemsPopup();
+                current_page -= 1;
                 loadMorePirosText.setText(R.string.load_piros_fail);
                 loadMorePirosText.setVisibility(View.VISIBLE);
             }
@@ -242,6 +228,14 @@ AdapterView.OnItemClickListener() {
             return true;
         } else
             return false;
+    }
+
+    protected void fixFooter(){
+        if(current_page >= last_page){
+            list.removeFooterView(loadMoreView);
+        } else if(list.getFooterViewsCount() < 1) {
+            list.addFooterView(loadMoreView);
+        }
     }
 
     public void showConnectionProblemsPopup() {

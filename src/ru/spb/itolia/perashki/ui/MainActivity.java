@@ -35,14 +35,10 @@ public class MainActivity extends SherlockFragmentActivity {
         indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         pager.setAdapter(adapter);
         indicator.setViewPager(pager);
-/*        adapter.addFragment(new PiroListFragment(piroType.NEW), getResources().getString(R.string.new_tab_title));
-        Log.v(TAG, "Added new piros fragment");*/  //New piros only available if logged in
         adapter.addFragment(new PiroListFragment(ParamTypes.GOOD), getResources().getString(R.string.good_tab_title));
         Log.v(TAG, "Added good piros fragment");
         adapter.addFragment(new PiroListFragment(ParamTypes.BEST), getResources().getString(R.string.best_tab_title));
         Log.v(TAG, "Added second fragment");
-        //adapter.addFragment(new PiroListFragment(piroType.RANDOM), getResources().getString(R.string.random_tab_title));
-        //Log.v(TAG, "Added random fragment");
         adapter.addFragment(new PiroListFragment(ParamTypes.ALL), getResources().getString(R.string.all_tab_title));
         Log.v(TAG, "Added archive fragment");
         adapter.addFragment(new SearchFragment(), getResources().getString(R.string.search_tab_title));
@@ -69,19 +65,18 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, R.string.settings_label, Menu.NONE, getString(R.string.settings_label))
+/*        menu.add(Menu.NONE, R.string.settings_label, Menu.NONE, getString(R.string.settings_label))
                 .setIcon(R.drawable.actionbar_settings)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);*/
         menu.add(Menu.NONE, R.string.refresh_label, Menu.NONE, getString(R.string.refresh_label))
                 .setIcon(R.drawable.actionbar_refresh)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menu.add(Menu.NONE, R.string.sort_label, Menu.NONE, getString(R.string.sort_label))
                 .setIcon(R.drawable.actionbar_sort)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        menu.add(Menu.NONE,R.string.filter_label, Menu.NONE, getString(R.string.filter_label))
+/*        menu.add(Menu.NONE,R.string.filter_label, Menu.NONE, getString(R.string.filter_label))
                 .setIcon(R.drawable.actionbar_filter)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
         return true;
     }
 
@@ -89,25 +84,25 @@ public class MainActivity extends SherlockFragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int selectedItemId = item.getItemId();
         switch (selectedItemId) {
-            case R.string.settings_label:
+/*            case R.string.settings_label:
                 Intent mIntent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(mIntent, 0);
-                break;
+                break;*/
             case R.string.refresh_label:
-                if(adapter.getItem(pager.getCurrentItem()).getClass().equals(PiroListFragment.class)){
+/*                if(adapter.getItem(pager.getCurrentItem()).getClass().equals(PiroListFragment.class)){*/
                     PiroListFragment current_fragment = (PiroListFragment) adapter.getItem(pager.getCurrentItem());
                     current_fragment.populateView();
-                } else {
+/*                } else {
                     SearchFragment current_fragment = (SearchFragment) adapter.getItem(pager.getCurrentItem());
                     current_fragment.populateView();
-                }
+                }*/
                 break;
             case R.string.sort_label:
                 makeSortDialog();
                 break;
-            case R.string.filter_label:
+/*            case R.string.filter_label:
                 makeFilterDialog();
-                break;
+                break;*/
         }
         return false;
     }

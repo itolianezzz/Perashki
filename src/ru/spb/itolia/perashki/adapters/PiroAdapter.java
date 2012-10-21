@@ -29,6 +29,7 @@ public class PiroAdapter extends ArrayAdapter<Piro> {
 
     class ViewHolder {
         private TextView piro_text;
+        private TextView number;
     }
 
     @Override
@@ -43,8 +44,10 @@ public class PiroAdapter extends ArrayAdapter<Piro> {
         }
         ViewHolder holder = (ViewHolder) rowView.getTag();
         holder.piro_text = (TextView) rowView.findViewById(R.id.piro_text);
+        holder.number = (TextView) rowView.findViewById(R.id.piro_number);
         Piro p = piros.get(position);
         holder.piro_text.setText(p.getText());
+        holder.number.setText(Integer.toString(position+1));
         return rowView;
     }
 }
