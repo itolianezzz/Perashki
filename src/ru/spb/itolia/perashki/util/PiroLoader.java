@@ -1,12 +1,6 @@
 package ru.spb.itolia.perashki.util;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,7 +8,6 @@ import org.jsoup.nodes.Element;
 import ru.spb.itolia.perashki.beans.ParamTypes;
 import ru.spb.itolia.perashki.beans.Piro;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -59,15 +52,15 @@ public class PiroLoader {
         return url;
     }
 
-    public static List<Piro> getPiros(Map<String, String> params) throws IOException {
-        HttpClient client = new DefaultHttpClient();
-        HttpPost getPiros;
+    public static List<Piro> getPiros(Map<String, String> params) throws Exception {
         String url = buildUrl(params);
+        /*HttpClient client = new DefaultHttpClient();
+        HttpPost getPiros;
         getPiros = new HttpPost(url);
         List<NameValuePair> postParams = new ArrayList<NameValuePair>(1);
         postParams.add(new BasicNameValuePair("confirm", "1"));
         getPiros.setEntity(new UrlEncodedFormEntity(postParams));
-        response = client.execute(getPiros);
+        response = client.execute(getPiros);*/
         Document doc = Jsoup.connect(url).data("confirm", "1").post();
         List<Element> elements = doc.getElementsByClass(PIRO_CLASS_NAME);
         return parsePiros(elements);

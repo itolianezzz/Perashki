@@ -215,8 +215,9 @@ AdapterView.OnItemClickListener() {
         List<Piro> piros = null;
         try {
             piros = PiroLoader.getPiros(params);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            piros = new ArrayList<Piro>();
         }
         return piros;
     }
