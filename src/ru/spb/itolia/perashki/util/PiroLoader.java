@@ -1,11 +1,16 @@
 package ru.spb.itolia.perashki.util;
 
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Source;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import ru.spb.itolia.perashki.beans.ParamTypes;
 import ru.spb.itolia.perashki.beans.Piro;
 
@@ -26,7 +31,7 @@ public class PiroLoader {
     public static final String HOST = "http://www.perashki.ru/";
     private static final String PIRO_CLASS_NAME = "pirojusttext";
     private static final String PIRO_INFO_CLASS = "simple_frame sml_cnd";
-    private static Source response;
+    private static HttpResponse response;
 
     private static String buildUrl(Map<String, String> params) {
         String url = HOST + params.get(ParamTypes.PIROTYPE);
@@ -55,43 +60,46 @@ public class PiroLoader {
     }
 
     public static List<Piro> getPiros(Map<String, String> params) throws IOException {
-        HttpClient client = new HttpClient();
-        PostMethod getPiros;
+        HttpClient client = new DefaultHttpClient();
+        HttpPost getPiros;
         String url = buildUrl(params);
-        getPiros = new PostMethod(url);
-        getPiros.addParameter("confirm", "1");
-        client.executeMethod(getPiros);
-        response = new Source(getPiros.getResponseBodyAsStream());
-        List<Element> elements = response.getAllElementsByClass(PIRO_CLASS_NAME);
+        getPiros = new HttpPost(url);
+        List<NameValuePair> postParams = new ArrayList<NameValuePair>(1);
+        postParams.add(new BasicNameValuePair("confirm", "1"));
+        getPiros.setEntity(new UrlEncodedFormEntity(postParams));
+        response = client.execute(getPiros);
+        Document doc = Jsoup.connect(url).data("confirm", "1").post();
+        List<Element> elements = doc.getElementsByClass(PIRO_CLASS_NAME);
         return parsePiros(elements);
     }
 
     private static List<Piro> parsePiros(List<Element> elements) {
         List<Piro> piros = new ArrayList<Piro>();
         String regexpToRemoveOddTags = "(<(/?(a|h).+?)>)";
-        String regexpToChangeTheNewLineSymbol = "<br/>";
+        String regexpToChangeTheNewLineSymbol = "<br />";
         for(Element el: elements) {
-            OutputDocument output = new OutputDocument(el.getContent());
+            Document output = new Document(el.html());
             Piro piro = new Piro();
-            piro.setId(el.getAttributeValue("id"));
-            piro.setText(output.toString().replaceAll(regexpToRemoveOddTags, "").replaceAll(regexpToChangeTheNewLineSymbol, "\n"));
+            piro.setId(el.attr("id"));
+            piro.setText(output.baseUri().replaceAll(regexpToRemoveOddTags, "").replaceAll("\n", "").replaceAll(regexpToChangeTheNewLineSymbol, "\n"));
             piros.add(piro);
+
         }
         return piros;
     }
 
     public static int getPages() {
-        Element element;
+       /* Element element;
         try {
-            element = response.getAllElementsByClass("pages").get(0);
+            //element = source.getAllElementsByClass("pages").get(0);
         } catch (IndexOutOfBoundsException e) {
             return 0;
         }
-        List<Element> elements = element.getAllElements("a");
+        //List<Element> elements = element.getAllElements("a");
         if(elements == null | elements.size() == 0){
             return 1;
         }
-        int pages = Integer.parseInt(elements.get(elements.size()-1).getContent().toString());
-    return pages;
+        //int pages = Integer.parseInt(elements.get(elements.size()-1).getContent().toString());*/
+    return 3;
     }
 }
