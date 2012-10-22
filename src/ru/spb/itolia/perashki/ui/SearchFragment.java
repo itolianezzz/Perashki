@@ -129,6 +129,9 @@ public class SearchFragment extends PiroListFragment implements IShowedFragment 
                 piros.addAll(pirosToAdd);
                 mAdapter = new PiroAdapter(getActivity(), piros);
                 list.setAdapter(mAdapter);
+            } else if(last_page == 0) {
+                noPiros.setVisibility(View.VISIBLE);
+                showNoPirosToast();
             } else {
                 showConnectionProblemsPopup();
                 noPiros.setVisibility(View.VISIBLE);
@@ -164,5 +167,9 @@ public class SearchFragment extends PiroListFragment implements IShowedFragment 
             loadMorePirosProgress.setVisibility(View.GONE);
             list.setSelectionFromTop(currentPosition + 1, 0);
         }
+    }
+
+    private void showNoPirosToast() {
+        Toast.makeText(getActivity(), getResources().getString(R.string.no_piros_found_toast), Toast.LENGTH_SHORT).show();
     }
 }

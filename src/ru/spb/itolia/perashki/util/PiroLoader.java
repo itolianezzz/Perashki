@@ -81,9 +81,14 @@ public class PiroLoader {
     }
 
     public static int getPages() {
-        Element element = response.getAllElementsByClass("pages").get(0);
+        Element element;
+        try {
+            element = response.getAllElementsByClass("pages").get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return 0;
+        }
         List<Element> elements = element.getAllElements("a");
-        if(elements == null){
+        if(elements == null | elements.size() == 0){
             return 1;
         }
         int pages = Integer.parseInt(elements.get(elements.size()-1).getContent().toString());

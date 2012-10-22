@@ -24,6 +24,7 @@
     <string name="no_piros_text">Пирожков нет :-(</string>
     <string name="connection_problems_toast">Что-то не так. Попробуйте еще раз</string>
     <string name="load_piros_fail">\n\nНе удалось! Попробовать еще?\n</string>
+    <string name="no_piros_found_toast">Пирожков с таким текстом не найдено!</string>
     <array name="sort">
         <item>дате написания</item>
         <item>дате переопубликации</item>

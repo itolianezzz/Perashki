@@ -17,12 +17,4 @@
             android:minLines="4" android:padding="3dp"
         android:paddingLeft="3dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/piro_number"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@+id/piro_text"
-        android:padding="3dp" />
-
 </RelativeLayout>
