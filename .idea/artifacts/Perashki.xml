@@ -9,6 +9,7 @@
         <option name="keyStorePassword" value="S2RpR1M3VFg=" />
         <option name="keyStoreUrl" value="file://C:/dropbox/Android/keystore/itolia-release.keystore" />
         <option name="proGuardCfgFileUrl" value="file://$PROJECT_DIR$/proguard-project.txt" />
+        <option name="runProGuard" value="true" />
         <option name="signingMode" value="RELEASE_SIGNED" />
       </options>
     </properties>
