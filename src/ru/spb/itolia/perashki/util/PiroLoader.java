@@ -1,6 +1,5 @@
 package ru.spb.itolia.perashki.util;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,7 +23,7 @@ public class PiroLoader {
     public static final String HOST = "http://www.perashki.ru/";
     private static final String PIRO_CLASS_NAME = "pirojusttext";
     private static final String PIRO_INFO_CLASS = "simple_frame sml_cnd";
-    private static HttpResponse response;
+    private static Document doc;
 
     private static String buildUrl(Map<String, String> params) {
         String url = HOST + params.get(ParamTypes.PIROTYPE);
@@ -54,14 +53,7 @@ public class PiroLoader {
 
     public static List<Piro> getPiros(Map<String, String> params) throws Exception {
         String url = buildUrl(params);
-        /*HttpClient client = new DefaultHttpClient();
-        HttpPost getPiros;
-        getPiros = new HttpPost(url);
-        List<NameValuePair> postParams = new ArrayList<NameValuePair>(1);
-        postParams.add(new BasicNameValuePair("confirm", "1"));
-        getPiros.setEntity(new UrlEncodedFormEntity(postParams));
-        response = client.execute(getPiros);*/
-        Document doc = Jsoup.connect(url).data("confirm", "1").post();
+        doc = Jsoup.connect(url).data("confirm", "1").post();
         List<Element> elements = doc.getElementsByClass(PIRO_CLASS_NAME);
         return parsePiros(elements);
     }
@@ -82,17 +74,17 @@ public class PiroLoader {
     }
 
     public static int getPages() {
-       /* Element element;
+        Element element;
         try {
-            //element = source.getAllElementsByClass("pages").get(0);
+            element = doc.getElementsByClass("pages").get(0);
         } catch (IndexOutOfBoundsException e) {
             return 0;
         }
-        //List<Element> elements = element.getAllElements("a");
+        List<Element> elements = element.getElementsByTag("a");
         if(elements == null | elements.size() == 0){
             return 1;
         }
-        //int pages = Integer.parseInt(elements.get(elements.size()-1).getContent().toString());*/
-    return 3;
+        int pages = Integer.parseInt(elements.get(elements.size()-1).text());
+    return pages;
     }
 }
