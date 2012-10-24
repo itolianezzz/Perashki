@@ -18,7 +18,6 @@ import ru.spb.itolia.perashki.beans.Piro;
 import ru.spb.itolia.perashki.util.IShowedFragment;
 import ru.spb.itolia.perashki.util.PiroLoader;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,7 +116,7 @@ AdapterView.OnItemClickListener() {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         String shareBody = piroToShare.getText();
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, PiroLoader.HOST + piroToShare.getId()); //TODO fix wrong URL
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, PiroLoader.HOST + "piro/" + piroToShare.getId());
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_label)));
     }
