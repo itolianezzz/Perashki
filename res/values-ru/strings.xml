@@ -6,7 +6,7 @@
     <string name="new_tab_title">Новые</string>
     <string name="random_tab_title">Рандом</string>
     <string name="all_tab_title">Архив</string>
-    <string name="load_more_label">\nХочу еще</string>
+    <string name="load_more_label">\n\nХочу еще</string>
     <string name="settings_label">Настройки</string>
     <string name="share_label">Поделиться</string>
     <string name="search_button_label">Найти</string>

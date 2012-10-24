@@ -6,7 +6,7 @@
     <string name="new_tab_title">New</string>
     <string name="random_tab_title">Random</string>
     <string name="all_tab_title">Archive</string>
-    <string name="load_more_label">\nLoad more</string>
+    <string name="load_more_label">\n\nLoad more</string>
     <string name="settings_label">Settings</string>
     <string name="share_label">Share via</string>
     <string name="search_button_label">search</string>
