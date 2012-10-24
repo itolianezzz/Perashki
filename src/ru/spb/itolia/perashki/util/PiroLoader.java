@@ -21,8 +21,9 @@ import java.util.Map;
  */
 public class PiroLoader {
     public static final String HOST = "http://www.perashki.ru/";
-    private static final String PIRO_CLASS_NAME = "pirojusttext";
-    private static final String PIRO_INFO_CLASS = "simple_frame sml_cnd";
+    private static final String PIRO_CLASS_TEXT = "pirojusttext";
+    private static final String PIRO_CLASS_NAME = "pirozhochek";
+    private static final String PIRO_CLASS_NICK = "nick";
     private static Document doc;
 
     private static String buildUrl(Map<String, String> params) {
@@ -63,9 +64,13 @@ public class PiroLoader {
         String regexpToRemoveOddTags = "(<(/?(a|h).+?)>)";
         String regexpToChangeTheNewLineSymbol = "<br />";
         for(Element el: elements) {
-            Document output = new Document(el.html());
             Piro piro = new Piro();
-            piro.setId(el.attr("id"));
+            Element temp_element = el.getElementsByClass(PIRO_CLASS_NICK).first();
+            String author = temp_element.getElementsByTag("a").first().text();
+            piro.setAuthor(author);
+            temp_element = el.getElementsByClass(PIRO_CLASS_TEXT).first();
+            Document output = new Document(temp_element.html());
+            piro.setId(temp_element.attr("id").replaceAll("pir", ""));
             piro.setText(output.baseUri().replaceAll(regexpToRemoveOddTags, "").replaceAll("\n", "").replaceAll(regexpToChangeTheNewLineSymbol, "\n"));
             piros.add(piro);
 
