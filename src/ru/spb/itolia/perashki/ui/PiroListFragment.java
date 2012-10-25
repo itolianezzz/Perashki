@@ -207,7 +207,7 @@ AdapterView.OnItemClickListener() {
                 loadMorePirosText.setVisibility(View.VISIBLE);
             }
             loadMorePirosProgress.setVisibility(View.GONE);
-            list.setSelectionFromTop(currentPosition + 1, top);
+            list.setSelectionFromTop(currentPosition, top);
         }
     }
 

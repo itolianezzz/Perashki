@@ -23,5 +23,5 @@
         android:layout_gravity="center"
         android:indeterminate="true"
         android:visibility="gone"
-        android:padding="16dp" />
+        android:padding="17dp" />
 </LinearLayout>
