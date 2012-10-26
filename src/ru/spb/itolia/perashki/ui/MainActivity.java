@@ -21,7 +21,6 @@ import java.util.Map;
 public class MainActivity extends SherlockFragmentActivity {
     private static final String TAG = "Perashki.MainActivity";
     private ViewPager pager;
-    private TitlePageIndicator indicator;
     private TabsAdapter adapter;
 
     @Override
@@ -32,7 +31,7 @@ public class MainActivity extends SherlockFragmentActivity {
         adapter = new TabsAdapter(getSupportFragmentManager(), false);
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);
-        indicator = (TitlePageIndicator) findViewById(R.id.indicator);
+        TitlePageIndicator indicator = (TitlePageIndicator) findViewById(R.id.indicator);
         pager.setAdapter(adapter);
         indicator.setViewPager(pager);
         adapter.addFragment(new PiroListFragment(ParamTypes.GOOD), getResources().getString(R.string.good_tab_title));

@@ -152,6 +152,7 @@ public class SearchFragment extends PiroListFragment implements IShowedFragment 
         protected void onPostExecute(List<Piro> pirosToAdd) {
             //super.onPostExecute(pirosToAdd);
             int currentPosition = list.getFirstVisiblePosition();
+            int top = list.getChildAt(0).getTop();
             if(!pirosToAdd.isEmpty()) {
                 loadMorePirosText.setText(R.string.load_more_label);
                 loadMorePirosText.setVisibility(View.VISIBLE);
@@ -165,7 +166,7 @@ public class SearchFragment extends PiroListFragment implements IShowedFragment 
                 loadMorePirosText.setVisibility(View.VISIBLE);
             }
             loadMorePirosProgress.setVisibility(View.GONE);
-            list.setSelectionFromTop(currentPosition + 1, 0);
+            list.setSelectionFromTop(currentPosition, top);
         }
     }
 

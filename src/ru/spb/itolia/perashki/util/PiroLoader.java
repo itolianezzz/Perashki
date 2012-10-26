@@ -46,7 +46,7 @@ public class PiroLoader {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 }
-                paramsString = new StringBuilder(paramsString).append(key).append("=").append(value).toString();
+                paramsString = paramsString + key + "=" + value;
             }
             url = new StringBuilder(url).append(paramsString).toString();
         }

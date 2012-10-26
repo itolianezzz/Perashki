@@ -91,7 +91,7 @@ public class PiroAdapter extends ArrayAdapter<Piro> {
                 try {
                     return PiroLoader.getAuthorInfo(author);
                 } catch (Exception e) {
-                    return new String(getContext().getResources().getString(R.string.load_info_failed));
+                    return getContext().getResources().getString(R.string.load_info_failed);
                 }
             }
 

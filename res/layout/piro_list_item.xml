@@ -27,8 +27,6 @@
         android:id="@+id/author_name"
         android:minLines="1"
         android:maxLines="1"
-        android:layout_toRightOf="@+id/author_name_label"
-        android:layout_alignTop="@+id/author_name_label"
         android:paddingLeft="5dp"
         android:paddingTop="5dp"
         android:paddingRight="5dp"

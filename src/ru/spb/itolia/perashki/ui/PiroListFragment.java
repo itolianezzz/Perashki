@@ -43,7 +43,6 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
     protected int last_page;
     protected List<Piro> piros;
     protected PiroAdapter mAdapter;
-    private LoadPirosTask pirosTask;
 
     public PiroListFragment() {
         Log.v(TAG, "PirolistFragment empty constructor: " + this.toString());
@@ -124,7 +123,7 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
         params.put(ParamTypes.PIROTYPE, type);
         current_page = 1;
         piros.clear();
-        pirosTask = new LoadPirosTask();
+        LoadPirosTask pirosTask = new LoadPirosTask();
         pirosTask.execute(params);
 
     }
@@ -216,10 +215,7 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
     public Boolean isConnectedToInternet() {
         ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(getActivity().CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        } else
-            return false;
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     protected void fixFooter(){
