@@ -97,15 +97,6 @@ public class PiroListFragment extends SherlockFragment implements IShowedFragmen
                 new LoadMorePirosTask().execute(params);
             }
         });
-        list.setOnItemClickListener(new
-AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Piro piroToShare = mAdapter.getItem(position);
-                sharePiro(piroToShare);
-
-            }
-        });
         if (type.equals(ParamTypes.GOOD) & current_page < 2) {
             populateView();
         }

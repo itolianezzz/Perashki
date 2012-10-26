@@ -24,7 +24,10 @@
     <string name="no_piros_text">No piros :-(</string>
     <string name="connection_problems_toast">Connection problems. Please try again</string>
     <string name="load_piros_fail">Failed! Try again?</string>
-    <string name="no_piros_found_toast">No piros found</string>
+    <string name="no_piros_found_toast">No piros found</string><string name="also_known_as_label">Also known as:</string><string name="about_author_label">About author:</string>
+    <string name="load_author_info_fail">Error!</string>
+    <string name="auhtor_info">Info about author</string>
+    <string name="load_info_failed">Error loading author info</string>
     <array name="sort">
         <item>Write date</item>
         <item>Repost date</item>

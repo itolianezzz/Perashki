@@ -24,6 +24,7 @@ public class PiroLoader {
     private static final String PIRO_CLASS_TEXT = "pirojusttext";
     private static final String PIRO_CLASS_NAME = "pirozhochek";
     private static final String PIRO_CLASS_NICK = "nick";
+    private static final String AUHTOR_INFO_CLASS = "simple_frame";
     private static Document doc;
 
     private static String buildUrl(Map<String, String> params) {
@@ -91,5 +92,16 @@ public class PiroLoader {
         }
         int pages = Integer.parseInt(elements.get(elements.size()-1).text());
     return pages;
+    }
+
+    public static String getAuthorInfo(String author) throws Exception {
+        String url = HOST + "author/" + URLEncoder.encode(author, HTTP.UTF_8);
+        doc = Jsoup.connect(url).data("confirm", "1").post();
+        Element element = doc.getElementsByClass(AUHTOR_INFO_CLASS).get(1);
+        //List<Element> elements = element.getElementsByTag("p").removeClass("sml gray");
+        String authors_info = element.html();
+
+
+        return authors_info;
     }
 }

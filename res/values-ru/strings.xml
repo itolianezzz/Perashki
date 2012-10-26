@@ -25,6 +25,11 @@
     <string name="connection_problems_toast">Что-то не так. Попробуйте еще раз</string>
     <string name="load_piros_fail">\n\nНе удалось! Попробовать еще?\n</string>
     <string name="no_piros_found_toast">Пирожков с таким текстом не найдено!</string>
+    <string name="also_known_as_label">Так же известен как:</string>
+    <string name="about_author_label">немножечко о себе:</string>
+    <string name="load_author_info_fail">Error!</string>
+    <string name="auhtor_info">Info about author</string>
+    <string name="load_info_failed">Error loading author info</string>
     <array name="sort">
         <item>дате написания</item>
         <item>дате переопубликации</item>
