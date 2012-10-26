@@ -103,7 +103,7 @@ public class PiroAdapter extends ArrayAdapter<Piro> {
                 } else {
                     progress.setVisibility(View.GONE);
                     info_text.setVisibility(View.VISIBLE);
-                    //info_text.setMaxLines(1);
+                    info_text.setMaxLines(15);
                     info_text.setVerticalScrollBarEnabled(true);
                     info_text.setMovementMethod(new ScrollingMovementMethod());
                     info_text.setText(Html.fromHtml(author_info));
